@@ -6,6 +6,7 @@ import lesson1.task1.discriminant
 import lesson1.task1.sqr
 import kotlin.math.max
 import kotlin.math.sqrt
+import kotlin.math.abs
 
 /**
  * Пример
@@ -132,10 +133,10 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int = when {
-    (kingX != rookX) && (kingY != rookY) && (kotlin.math.abs(kingX - bishopX) != kotlin.math.abs(kingY - bishopY)) -> 0
-    ((kingX == rookX) || (kingY == rookY)) && (kotlin.math.abs(kingX - bishopX) == kotlin.math.abs(kingY - bishopY)) -> 3
+    (kingX != rookX) && (kingY != rookY) && (abs(kingX - bishopX) != abs(kingY - bishopY)) -> 0
+    ((kingX == rookX) || (kingY == rookY)) && (abs(kingX - bishopX) == abs(kingY - bishopY)) -> 3
     (kingX == rookX) || (kingY == rookY) -> 1
-    kotlin.math.abs(kingX - bishopX) == kotlin.math.abs(kingY - bishopY) -> 2
+    abs(kingX - bishopX) == abs(kingY - bishopY) -> 2
     else -> -1
 }
 

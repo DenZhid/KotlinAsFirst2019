@@ -4,6 +4,7 @@ package lesson2.task2
 
 import lesson1.task1.sqr
 import kotlin.math.sqrt
+import kotlin.math.abs
 
 /**
  * Пример
@@ -29,10 +30,8 @@ fun isNumberHappy(number: Int): Boolean =
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = when {
-    (kotlin.math.abs(x1 - x2) == kotlin.math.abs(y1 - y2)) || (x1 == x2) || (y1 == y2) -> true
-    else -> false
-}
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
+    (abs(x1 - x2) == abs(y1 - y2)) || (x1 == x2) || (y1 == y2)
 
 
 /**
@@ -58,10 +57,8 @@ fun daysInMonth(month: Int, year: Int): Int = when {
 fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
-): Boolean = when {
-    sqrt(sqr(x1 - x2) + sqr(y1 - y2)) + r1 <= r2 -> true
-    else -> false
-}
+): Boolean =
+    sqrt(sqr(x1 - x2) + sqr(y1 - y2)) + r1 <= r2
 
 /**
  * Средняя
@@ -72,7 +69,6 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = when {
-    (a <= r) && ((b <= s) || (c <= s)) || (a <= s) && ((b <= r) || (c <= r)) || (b <= s) && (c <= r) || (b <= r) && (c <= s) -> true
-    else -> false
-}
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
+    (a <= r) && ((b <= s) || (c <= s)) || (a <= s) && ((b <= r) || (c <= r)) || (b <= s) && (c <= r) || (b <= r) && (c <= s)
+
