@@ -7,6 +7,7 @@ import lesson1.task1.sqr
 import kotlin.math.max
 import kotlin.math.sqrt
 import kotlin.math.abs
+import kotlin.math.min
 
 /**
  * Пример
@@ -166,11 +167,6 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = when {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
-    ((a == c) && (b == a)) || ((a > c) && (d > a) && (d > b)) -> b - a
     (a < c) && (b < c) || (a > c) && (d < a) -> -1
-    ((a < c) && (b == c)) || ((a > c) && (a == d)) || ((a == b) && (a == c)) || ((a == c) && (a == d)) || ((b == c) && (b == d)) -> 0
-    (a < c) && (b > c) && (b < d) -> b - c
-    (a > c) && (d > a) && (d < b) -> d - a
-    (a < c) && (b > c) && (b > d) -> d - c
-    else -> -2
+    else -> min(b, d) - max(a, c)
 }
