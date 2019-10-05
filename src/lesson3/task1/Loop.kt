@@ -3,8 +3,10 @@
 package lesson3.task1
 
 import kotlin.math.sqrt
-import kotlin.math.min
-import kotlin.math.max
+import kotlin.math.abs
+import lesson1.task1.sqr
+import kotlin.math.pow
+
 
 /**
  * Пример
@@ -75,7 +77,7 @@ fun digitNumber(n: Int): Int {
     do {
         count++
         balance /= 10
-    } while (balance > 0)
+    } while (abs(balance) > 0)
     return count
 }
 
@@ -102,13 +104,14 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var k = max(m, n)
+    var mChanged = m
+    var nChanged = n
     if (isPrime(m) && isPrime(n) && m != n) return (m * n)
-    else do {
-        if ((k % m == 0) && (k % n == 0)) break
-        else k += 1
-    } while (k > 0)
-    return k
+    else while (mChanged != nChanged) {
+        if (mChanged > nChanged) mChanged -= nChanged
+        else nChanged -= mChanged
+    }
+    return (m * n) / mChanged
 }
 
 /**
@@ -119,7 +122,7 @@ fun lcm(m: Int, n: Int): Int {
 fun minDivisor(n: Int): Int {
     var minDivider = 0
     if (isPrime(n)) return n
-    else for (i in 2..n) {
+    else for (i in 2..sqrt(n.toDouble()).toInt()) {
         minDivider = i
         if (n % minDivider == 0) break
     }
@@ -132,13 +135,8 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    var maxDivider = 0
-    if (isPrime(n)) return 1
-    else for (i in n - 1 downTo 1) {
-        maxDivider = i
-        if (n % maxDivider == 0) break
-    }
-    return maxDivider
+    return if (isPrime(n)) 1
+    else (n / minDivisor(n))
 }
 
 /**
@@ -149,12 +147,13 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    if (isPrime(m) && isPrime(n) && m != n) return true
-    else for (i in min(m, n) downTo 2) {
-        if ((m % i == 0) && (n % i == 0)) return false
-        else continue
+    var mChanged = m
+    var nChanged = n
+    while (mChanged != nChanged) {
+        if (mChanged > nChanged) mChanged -= nChanged
+        else nChanged -= mChanged
     }
-    return true
+    return mChanged == 1
 }
 
 /**
@@ -164,7 +163,17 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    var k = 0
+    for (i in sqrt(m.toDouble()).toInt()..sqrt(n.toDouble()).toInt()) {
+        if (sqr(i) in m..n) {
+            k++
+            break
+        }
+    }
+    return (k != 0)
+}
+
 
 /**
  * Средняя
@@ -182,7 +191,16 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var count = 0
+    var xChanged = x
+    while (xChanged != 1) {
+        count++
+        if (xChanged % 2 == 0) xChanged /= 2
+        else xChanged = 3 * xChanged + 1
+    }
+    return count
+}
 
 /**
  * Средняя
@@ -213,7 +231,15 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var nOld = n
+    var nNew = 0
+    for (i in 1..digitNumber(n)) {
+        nNew = nNew * 10 + nOld % 10
+        nOld /= 10
+    }
+    return nNew
+}
 
 /**
  * Средняя
@@ -224,7 +250,7 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean = n == revert(n)
 
 /**
  * Средняя
@@ -234,7 +260,20 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var numberPast = n % 10
+    var numberNow = (n % 100) / 10
+    var nChanged = n / 100
+    if (digitNumber(n) == 1) return false
+    else if (numberPast != numberNow) return true
+    else while (nChanged != 0) {
+        numberPast = numberNow
+        numberNow = nChanged % 10
+        nChanged /= 10
+        if (numberNow != numberPast) break
+    }
+    return (nChanged != 0)
+}
 
 /**
  * Сложная
@@ -245,7 +284,23 @@ fun hasDifferentDigits(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var nChanged = n
+    var number = 0.0
+    var k = 0
+    var square: Int
+    while (nChanged != 0) {
+        k++
+        square = sqr(k)
+        for (i in 1..digitNumber(sqr(k))) {
+            number = square / 10.0.pow(digitNumber(square) - 1)
+            square %= (10.0.pow(digitNumber(square) - 1)).toInt()
+            nChanged -= 1
+            if (nChanged == 0) break
+        }
+    }
+    return number.toInt()
+}
 
 /**
  * Сложная
@@ -256,4 +311,22 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var numberFib = 1
+    var lastNumberFib = 1
+    var number = 1.0
+    var nChanged = n - 2
+    var numberFibChanged: Int
+    while (nChanged > 0) {
+        numberFib += lastNumberFib
+        lastNumberFib = numberFib - lastNumberFib
+        numberFibChanged = numberFib
+        for (i in 1..digitNumber(numberFib)) {
+            number = numberFibChanged / 10.0.pow(digitNumber(numberFibChanged) - 1)
+            numberFibChanged %= (10.0.pow(digitNumber(numberFibChanged) - 1)).toInt()
+            nChanged -= 1
+            if (nChanged == 0) break
+        }
+    }
+    return number.toInt()
+}
