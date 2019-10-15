@@ -2,9 +2,11 @@
 
 package lesson3.task1
 
+import lesson1.task1.lengthInMeters
 import kotlin.math.sqrt
 import kotlin.math.abs
 import lesson1.task1.sqr
+import kotlin.math.PI
 import kotlin.math.pow
 
 
@@ -73,11 +75,11 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var count = 0
-    var balance = n
+    var balance = abs(n)
     do {
         count++
         balance /= 10
-    } while (abs(balance) > 0)
+    } while (balance > 0)
     return count
 }
 
@@ -107,7 +109,7 @@ fun lcm(m: Int, n: Int): Int {
     var mChanged = m
     var nChanged = n
     if (isPrime(m) && isPrime(n) && m != n) return (m * n)
-    else while (mChanged != nChanged) {
+    while (mChanged != nChanged) {
         if (mChanged > nChanged) mChanged -= nChanged
         else nChanged -= mChanged
     }
@@ -122,7 +124,7 @@ fun lcm(m: Int, n: Int): Int {
 fun minDivisor(n: Int): Int {
     var minDivider = 0
     if (isPrime(n)) return n
-    else for (i in 2..sqrt(n.toDouble()).toInt()) {
+    for (i in 2..sqrt(n.toDouble()).toInt()) {
         minDivider = i
         if (n % minDivider == 0) break
     }
@@ -134,9 +136,9 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    return if (isPrime(n)) 1
-    else (n / minDivisor(n))
+fun maxDivisor(n: Int): Int = when {
+    (isPrime(n)) -> 1
+    else -> (n / minDivisor(n))
 }
 
 /**
@@ -211,7 +213,21 @@ fun collatzSteps(x: Int): Int {
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
-fun sin(x: Double, eps: Double): Double = TODO()
+fun sin(x: Double, eps: Double): Double {
+    var xChange = x
+    while (xChange !in -2 * PI..2 * PI) {
+        xChange -= 2 * PI
+    }
+    var k = 1
+    var member = (-1.0).pow(k) * xChange.pow(2 * k + 1) / factorial(2 * k + 1)
+    var valueSin = xChange + member
+    while (abs(member) >= eps) {
+        k++
+        member = (-1.0).pow(k) * xChange.pow(2 * k + 1) / factorial(2 * k + 1)
+        valueSin += member
+    }
+    return valueSin
+}
 
 /**
  * Средняя
@@ -222,7 +238,21 @@ fun sin(x: Double, eps: Double): Double = TODO()
  * Подумайте, как добиться более быстрой сходимости ряда при больших значениях x.
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
-fun cos(x: Double, eps: Double): Double = TODO()
+fun cos(x: Double, eps: Double): Double {
+    var xChanged = x
+    while (xChanged !in -2 * PI..2 * PI) {
+        xChanged -= 2 * PI
+    }
+    var k = 1
+    var member = (-1.0).pow(k) * xChanged.pow(2 * k) / factorial(2 * k)
+    var valueCos = 1 + member
+    while (abs(member) > eps) {
+        k++
+        member = (-1.0).pow(k) * xChanged.pow(2 * k) / factorial(2 * k)
+        valueCos += member
+    }
+    return valueCos
+}
 
 /**
  * Средняя
@@ -265,8 +295,8 @@ fun hasDifferentDigits(n: Int): Boolean {
     var numberNow = (n % 100) / 10
     var nChanged = n / 100
     if (digitNumber(n) == 1) return false
-    else if (numberPast != numberNow) return true
-    else while (nChanged != 0) {
+    if (numberPast != numberNow) return true
+    while (nChanged != 0) {
         numberPast = numberNow
         numberNow = nChanged % 10
         nChanged /= 10
@@ -286,20 +316,15 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun squareSequenceDigit(n: Int): Int {
     var nChanged = n
-    var number = 0.0
-    var k = 0
-    var square: Int
-    while (nChanged != 0) {
-        k++
-        square = sqr(k)
-        for (i in 1..digitNumber(sqr(k))) {
-            number = square / 10.0.pow(digitNumber(square) - 1)
-            square %= (10.0.pow(digitNumber(square) - 1)).toInt()
-            nChanged -= 1
-            if (nChanged == 0) break
-        }
+    var i = 1
+    var digit = digitNumber(sqr(i))
+    while (nChanged - digit > 0) {
+        nChanged -= digit
+        i++
+        digit = digitNumber(sqr(i))
     }
-    return number.toInt()
+    digit -= nChanged
+    return (sqr(i) / 10.0.pow(digit).toInt()) % 10
 }
 
 /**
@@ -312,21 +337,14 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var numberFib = 1
-    var lastNumberFib = 1
-    var number = 1.0
-    var nChanged = n - 2
-    var numberFibChanged: Int
-    while (nChanged > 0) {
-        numberFib += lastNumberFib
-        lastNumberFib = numberFib - lastNumberFib
-        numberFibChanged = numberFib
-        for (i in 1..digitNumber(numberFib)) {
-            number = numberFibChanged / 10.0.pow(digitNumber(numberFibChanged) - 1)
-            numberFibChanged %= (10.0.pow(digitNumber(numberFibChanged) - 1)).toInt()
-            nChanged -= 1
-            if (nChanged == 0) break
-        }
+    var nChanged = n
+    var i = 1
+    var digit = digitNumber(fib(i))
+    while (nChanged - digit > 0) {
+        nChanged -= digit
+        i++
+        digit = digitNumber(fib(i))
     }
-    return number.toInt()
+    digit -= nChanged
+    return (fib(i) / 10.0.pow(digit).toInt()) % 10
 }
