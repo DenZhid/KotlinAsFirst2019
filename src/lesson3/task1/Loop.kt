@@ -2,7 +2,6 @@
 
 package lesson3.task1
 
-import lesson1.task1.lengthInMeters
 import kotlin.math.sqrt
 import kotlin.math.abs
 import lesson1.task1.sqr
@@ -214,10 +213,7 @@ fun collatzSteps(x: Int): Int {
  * Использовать kotlin.math.sin и другие стандартные реализации функции синуса в этой задаче запрещается.
  */
 fun sin(x: Double, eps: Double): Double {
-    var xChange = x
-    while (xChange !in -2 * PI..2 * PI) {
-        xChange -= 2 * PI
-    }
+    val xChange = x % (2 * PI)
     var k = 1
     var member = (-1.0).pow(k) * xChange.pow(2 * k + 1) / factorial(2 * k + 1)
     var valueSin = xChange + member
@@ -239,10 +235,7 @@ fun sin(x: Double, eps: Double): Double {
  * Использовать kotlin.math.cos и другие стандартные реализации функции косинуса в этой задаче запрещается.
  */
 fun cos(x: Double, eps: Double): Double {
-    var xChanged = x
-    while (xChanged !in -2 * PI..2 * PI) {
-        xChanged -= 2 * PI
-    }
+    val xChanged = x % (2 * PI)
     var k = 1
     var member = (-1.0).pow(k) * xChanged.pow(2 * k) / factorial(2 * k)
     var valueCos = 1 + member
