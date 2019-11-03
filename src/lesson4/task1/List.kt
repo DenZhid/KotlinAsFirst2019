@@ -5,6 +5,7 @@ package lesson4.task1
 import lesson1.task1.discriminant
 import kotlin.math.sqrt
 import lesson1.task1.sqr
+import lesson3.task1.digitNumber
 import lesson3.task1.isPrime
 import kotlin.math.pow
 
@@ -144,13 +145,12 @@ fun mean(list: List<Double>): Double = when {
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = if (list.isEmpty()) list
-else {
+fun center(list: MutableList<Double>): MutableList<Double> {
     val mean = mean(list)
     for (i in 0 until list.size) {
         list[i] -= mean
     }
-    list
+    return list
 }
 
 /**
@@ -164,7 +164,7 @@ fun times(a: List<Int>, b: List<Int>): Int = when {
     a.isEmpty() || b.isEmpty() -> 0
     else -> {
         var c = 0
-        for (i in a.indices) { //что такое .indices?
+        for (i in a.indices) {
             c += a[i] * b[i]
         }
         c
@@ -179,16 +179,13 @@ fun times(a: List<Int>, b: List<Int>): Int = when {
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Int>, x: Int): Int = when {
-    p.isEmpty() -> 0
-    else -> {
-        var pValue = 0.0
-        val doubleX = x.toDouble()
-        for (i in p.indices) {
-            pValue += p[i] * doubleX.pow(i)
-        }
-        pValue.toInt()
+fun polynom(p: List<Int>, x: Int): Int {
+    var pValue = 0.0
+    val doubleX = x.toDouble()
+    for (i in p.indices) {
+        pValue += p[i] * doubleX.pow(i)
     }
+    return pValue.toInt()
 }
 
 
@@ -202,16 +199,11 @@ fun polynom(p: List<Int>, x: Int): Int = when {
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun accumulate(list: MutableList<Int>): MutableList<Int> = when {
-    list.isEmpty() -> list
-    else -> {
-        var sum = 0
-        for (i in 0 until list.size) {
-            sum += list[i]
-            list[i] += sum - list[i]
-        }
-        list
+fun accumulate(list: MutableList<Int>): MutableList<Int> {
+    for (i in 1 until list.size) {
+        list[i] += list[i - 1]
     }
+    return list
 }
 
 /**
@@ -281,7 +273,12 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String =
+    convert(n, base).map {
+        if (it <= 9) (it + 48).toChar() //сместить
+        else (it + 87).toChar()
+    }.joinToString(separator = "")
+
 
 /**
  * Средняя
@@ -290,7 +287,14 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    val size = digits.size
+    var result = 0
+    for (i in digits.indices) {
+        result += digits[i] * (base.toDouble().pow(size - (i + 1))).toInt()
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -304,7 +308,15 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    val list = mutableListOf<Int>()
+    for (i in str.indices) {
+        val strInt = str[i].toInt()
+        if (strInt <= 57) list.add(strInt - 48)
+        else list.add(strInt - 87)
+    }
+    return decimal(list, base)
+}
 
 /**
  * Сложная
@@ -314,7 +326,81 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun forThousandsRoman(element: Int): String {
+    var result = ""
+    for (i in 1..element) {
+        result += "M"
+    }
+    return result
+}
+
+fun forHundredsRoman(element: Int): String =
+    when (element) {
+        0 -> ""
+        in 1..3 -> {
+            var result = ""
+            for (i in 1..element) result += "C"
+            result
+        }
+        4 -> "CD"
+        in 5..8 -> {
+            var result = "D"
+            for (i in 1..element - 5) result += "C"
+            result
+        }
+        else -> "CM"
+    }
+
+
+fun forDozensRoman(element: Int): String =
+    when (element) {
+        0 -> ""
+        in 1..3 -> {
+            var result = ""
+            for (i in 1..element) result += "X"
+            result
+        }
+        4 -> "XL"
+        in 5..8 -> {
+            var result = "L"
+            for (i in 1..element - 5) result += "X"
+            result
+        }
+        else -> "XC"
+    }
+
+fun forUnitsRoman(element: Int): String =
+    when (element) {
+        0 -> ""
+        in 1..3 -> {
+            var result = ""
+            for (i in 1..element) result += "I"
+            result
+        }
+        4 -> "IV"
+        in 5..8 -> {
+            var result = "V"
+            for (i in 1..element - 5) result += "I"
+            result
+        }
+        else -> "IX"
+    }
+
+fun roman(n: Int): String {
+    var nChanged = n
+    val list = mutableListOf<Int>()
+    for (i in 1..digitNumber(n)) {
+        list.add(nChanged % 10)
+        nChanged /= 10
+    }
+    return when (list.size) {
+        4 ->
+            forThousandsRoman(list[3]) + forHundredsRoman(list[2]) + forDozensRoman(list[1]) + forUnitsRoman(list[0])
+        3 -> forHundredsRoman(list[2]) + forDozensRoman(list[1]) + forUnitsRoman(list[0])
+        2 -> forDozensRoman(list[1]) + forUnitsRoman(list[0])
+        else -> forUnitsRoman(list[0])
+    }
+}
 
 /**
  * Очень сложная
@@ -323,4 +409,76 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+/*fun forThousandsRussian(element: Int): String =
+    if (element == 0) ""
+    else when {
+        (element % 100 in 11..19) -> forHundredsRussian(element) + forDozensRussian(element % 100) + "тысяч"
+        (element % 10 == 0) || ((element % 10 in 5..9) && (element % 100 !in 15..19)) ->
+            forHundredsRussian(element) + forDozensRussian(element % 100) + forUnitsRussian(element % 10) + "тысяч"
+        (element % 10 == 1) -> forHundredsRussian(element) + forDozensRussian(element % 100) + "одна тысяча"
+        (element % 10 == 2) -> forHundredsRussian(element) + forDozensRussian(element % 100) + "две тысячи"
+        else -> forHundredsRussian(element) + forDozensRussian(element % 100) + forUnitsRussian(element % 10) + " тысячи"
+    }
+
+fun forHundredsRussian(element: Int): String =
+    when (element / 100) {
+        0 -> ""
+        1 -> "сто"
+        2 -> "двести"
+        3 -> "триста"
+        4 -> "честыреста"
+        5 -> "пятьсот"
+        6 -> "шестьсот"
+        7 -> "семьсот"
+        8 -> "восемьсот"
+        else -> "девятьсот"
+    }
+
+fun forDozensRussian(element: Int): String =
+    if (element in 10..19) when (element) {
+        10 -> "десять"
+        11 -> "одиннадцать"
+        12 -> "двенадцать"
+        13 -> "тринадцать"
+        14 -> "четырнадцать"
+        15 -> "пятнадцать"
+        16 -> "шестнадцать"
+        17 -> "семнадцать"
+        18 -> "восемнадцать"
+        else -> "девятнадцать"
+    }
+    else when (element / 10) {
+        0 -> ""
+        2 -> "двадцать"
+        3 -> "тридцать"
+        4 -> "сорок"
+        5 -> "пятьдесят"
+        6 -> "шестьдесят"
+        7 -> "семьдесят"
+        8 -> "восемьдесят"
+        else -> "девяносто"
+    }
+
+
+fun forUnitsRussian(element: Int): String =
+    when (element) {
+        0 -> ""
+        1 -> "один"
+        2 -> "два"
+        3 -> "три"
+        4 -> "четыре"
+        5 -> "пять"
+        6 -> "шесть"
+        7 -> "семь"
+        8 -> "восемь"
+        else -> "девять"
+    }*/
+
+
+fun russian(n: Int): String = TODO() /* when (digitNumber(n)) {
+    1 -> forUnitsRussian(n)
+    2 -> forDozensRussian(n) + " " + forUnitsRussian(n % 10)
+    3 -> forHundredsRussian(n) + " " + forDozensRussian(n % 100) + " " + forUnitsRussian(n % 10)
+    4 ->
+}*/
+

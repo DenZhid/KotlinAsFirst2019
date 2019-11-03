@@ -141,6 +141,7 @@ class Tests {
         assertEquals(13, polynom(listOf(3, 2), 5))
         assertEquals(0, polynom(listOf(2, -3, 1), 1))
         assertEquals(45, polynom(listOf(-7, 6, 4, -4, 1), -2))
+        assertEquals(-1247348296, polynom(listOf(-1000, -1000, -1000, -1000, -1000, -1000), -20))
     }
 
     @Test
@@ -227,6 +228,47 @@ class Tests {
         assertEquals("DCXCIV", roman(694))
         assertEquals("XLIX", roman(49))
     }
+
+    @Test
+    fun forThousandsRoman() {
+        assertEquals("M", forThousandsRoman(1))
+        assertEquals("MM", forThousandsRoman(2))
+        assertEquals("MMM", forThousandsRoman(3))
+    }
+
+    @Test
+    fun forHundredsRoman() {
+        assertEquals("C", forHundredsRoman(1))
+        assertEquals("CC", forHundredsRoman(2))
+        assertEquals("CD", forHundredsRoman(4))
+        assertEquals("D", forHundredsRoman(5))
+        assertEquals("DC", forHundredsRoman(6))
+        assertEquals("DCC", forHundredsRoman(7))
+        assertEquals("CM", forHundredsRoman(9))
+    }
+
+    @Test
+    fun forDozensRoman() {
+        assertEquals("X", forDozensRoman(1))
+        assertEquals("XX", forDozensRoman(2))
+        assertEquals("XL", forDozensRoman(4))
+        assertEquals("L", forDozensRoman(5))
+        assertEquals("LX", forDozensRoman(6))
+        assertEquals("LXX", forDozensRoman(7))
+        assertEquals("XC", forDozensRoman(9))
+    }
+
+    @Test
+    fun forUnitsRoman() {
+        assertEquals("I", forUnitsRoman(1))
+        assertEquals("II", forUnitsRoman(2))
+        assertEquals("IV", forUnitsRoman(4))
+        assertEquals("V", forUnitsRoman(5))
+        assertEquals("VI", forUnitsRoman(6))
+        assertEquals("VII", forUnitsRoman(7))
+        assertEquals("IX", forUnitsRoman(9))
+    }
+
 
     @Test
     @Tag("Impossible")
