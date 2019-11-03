@@ -118,9 +118,6 @@ fun nod(m: Int, n: Int): Int {
 
 fun lcm(m: Int, n: Int): Int = m * n / nod(m, n)
 
-
-
-
 /**
  * Простая
  *

@@ -180,12 +180,12 @@ fun times(a: List<Int>, b: List<Int>): Int = when {
  * Значение пустого многочлена равно 0 при любом x.
  */
 fun polynom(p: List<Int>, x: Int): Int {
-    var pValue = 0.0
+    var pValue = 0
     val doubleX = x.toDouble()
     for (i in p.indices) {
-        pValue += p[i] * doubleX.pow(i)
+        pValue += p[i] * (doubleX.pow(i)).toInt()
     }
-    return pValue.toInt()
+    return pValue
 }
 
 
