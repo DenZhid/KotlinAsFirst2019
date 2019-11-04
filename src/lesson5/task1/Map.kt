@@ -93,14 +93,14 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val res = mutableMapOf<Int, List<String>>()
-    for (i in 1..5) {
-        val list = mutableListOf<String>()
-        for ((name, grade) in grades) {
-            if (grade == i) list.add(name)
+    for ((nameStart, valueStart) in grades)
+        if (valueStart in res) continue
+        else {
+            val listOfPupil = mutableListOf<String>()
+            for ((name, value) in grades)
+                if (value == valueStart) listOfPupil.add(name)
+            res[valueStart] = listOfPupil
         }
-        if (list.isEmpty()) continue
-        else res[i] = list
-    }
     return res
 }
 
@@ -140,7 +140,10 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Unit { //Idea пишет, что Unit здесб можно убрать. Стоит ли это делать?
+fun subtractOf(
+    a: MutableMap<String, String>,
+    b: Map<String, String>
+): Unit { //Idea пишет, что Unit здесб можно убрать. Стоит ли это делать?
     val valueToRemove = mutableListOf<String>()
     for ((key, value) in a) if (b[key] == value) valueToRemove.add(key)
     for (key in valueToRemove) a.remove(key)
@@ -204,9 +207,23 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> = TODO() /*{
-    for ((name, value) in stockPrices) {}
-}*/
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
+    val res = mutableMapOf<String, Double>()
+    for ((stockName) in stockPrices) {
+        if (stockName in res) continue
+        else {
+            var averageCost = 0.0
+            var count = 0
+            for ((name, value) in stockPrices)
+                if (name == stockName) {
+                    averageCost += value
+                    count++
+                }
+            res[stockName] = averageCost / count
+        }
+    }
+    return res
+}
 
 /**
  * Средняя
@@ -223,7 +240,11 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()/*{
+    for ((name, product) in stuff) {
+
+    }
+}*/
 
 /**
  * Средняя
@@ -261,7 +282,20 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    val res = mutableMapOf<String, Int>()
+    for (i in list.indices) {
+        if (res[list[i]] == null) {
+            val valueToCount = list[i]
+            var count = 0
+            for (j in list.indices)
+                if (list[j] == valueToCount) count++
+            if (count > 1) res[valueToCount] = count
+        }
+    }
+    return res
+}
+
 
 /**
  * Средняя
@@ -272,7 +306,17 @@ fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO()
+fun hasAnagrams(words: List<String>): Boolean = TODO() /*{
+    for (i in words.indices) {
+        val lettersInWord = mutableListOf<Char>()
+        for (j in words[i].indices) {
+            lettersInWord.add((words[i])[j])
+        }
+        for (g in (i + 1)..words.size) {
+
+        }
+    }
+}*/
 
 /**
  * Сложная
