@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import ru.spbstu.wheels.sorted
+
 /**
  * Пример
  *
@@ -312,7 +314,7 @@ fun hasAnagrams(words: List<String>): Boolean = TODO() /*{
         for (j in words[i].indices) {
             lettersInWord.add((words[i])[j])
         }
-        for (g in (i + 1)..words.size) {
+        for (g in (i + 1) until words.size) {
 
         }
     }
@@ -361,7 +363,18 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    var res = Pair(0, 0)
+    for (i in list.indices) {
+        for (j in (i + 1) until list.size)
+            if (list[i] + list[j] == number) {
+                res = Pair(i, j)
+                break
+            }
+    }
+    return if (res == Pair(0, 0)) Pair(-1, -1)
+    else res.sorted()
+}
 
 /**
  * Очень сложная
