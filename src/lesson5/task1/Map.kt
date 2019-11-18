@@ -94,15 +94,11 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val res = mutableMapOf<Int, List<String>>()
-    for ((nameStart, valueStart) in grades)
-        if (valueStart in res) continue
-        else {
-            val listOfPupil = mutableListOf<String>()
-            for ((name, value) in grades)
-                if (value == valueStart) listOfPupil.add(name)
-            res[valueStart] = listOfPupil
-        }
+    val res = mutableMapOf<Int, MutableList<String>>()
+    for ((nameStart, valueStart) in grades) {
+        if (res[valueStart] == null) res[valueStart] = mutableListOf(nameStart)
+        else res[valueStart]!!.add(nameStart)
+    }
     return res
 }
 
@@ -117,16 +113,12 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
-    var k = 0
     for ((keyA, valueA) in a) {
-        if (valueA != b[keyA]) {
-            k++
-            break
-        } else continue
+        if (valueA != b[keyA]) break
+        else return true
     }
-    return (k != 1)
+    return false
 }
-
 
 /**
  * Простая
@@ -145,10 +137,8 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
 fun subtractOf(
     a: MutableMap<String, String>,
     b: Map<String, String>
-): Unit { //Idea пишет, что Unit здесб можно убрать. Стоит ли это делать?
-    val valueToRemove = mutableListOf<String>()
-    for ((key, value) in a) if (b[key] == value) valueToRemove.add(key)
-    for (key in valueToRemove) a.remove(key)
+): Unit {
+    for ((key, value) in b) if (a[key] == value) a.remove(key)
 }
 
 /**
@@ -158,13 +148,7 @@ fun subtractOf(
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val res = mutableSetOf<String>()
-    for (namesA in a) {
-        for (namesB in b) if (namesA == namesB) res.add(namesA)
-    }
-    return res.toList()
-}
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = ((a.toSet()).filter { it in b.toSet() }).toList()
 
 /**
  * Средняя
@@ -211,19 +195,10 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val res = mutableMapOf<String, Double>()
-    for ((stockName) in stockPrices) {
-        if (stockName in res) continue
-        else {
-            var averageCost = 0.0
-            var count = 0
-            for ((name, value) in stockPrices)
-                if (name == stockName) {
-                    averageCost += value
-                    count++
-                }
-            res[stockName] = averageCost / count
-        }
-    }
+    val map = mutableMapOf<String, List<Double>>()
+    for ((stockName, price) in stockPrices) map[stockName] =
+        map.getOrDefault(stockName, listOf()) + price
+    for ((stockName, price) in map) res[stockName] = price.sum() / price.size
     return res
 }
 
@@ -242,11 +217,22 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()/*{
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
+    var res = ""
+    var minPrice = 0.0
+    for ((name, product) in stuff) if (product.first == kind) {
+        res = name
+        minPrice = product.second
+        break
+    } else return null
     for ((name, product) in stuff) {
-
+        if (product.first == kind && product.second < minPrice) {
+            res = name
+            minPrice = product.second
+        }
     }
-}*/
+    return res
+}
 
 /**
  * Средняя
@@ -257,20 +243,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val setOfWord = mutableSetOf<Char>()
-    var k = 0
-    for (i in word.indices) setOfWord.add(word[i])
-    for (elementOfSet in setOfWord) {
-        if (elementOfSet in chars) continue
-        else {
-            k++
-            break
-        }
-    }
-    return (k == 0)
-}
-
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+    (word.toLowerCase().toSet().filter { it !in (chars.toString().toLowerCase()) }).isEmpty()
 
 /**
  * Средняя
@@ -286,18 +260,9 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val res = mutableMapOf<String, Int>()
-    for (i in list.indices) {
-        if (res[list[i]] == null) {
-            val valueToCount = list[i]
-            var count = 0
-            for (j in list.indices)
-                if (list[j] == valueToCount) count++
-            if (count > 1) res[valueToCount] = count
-        }
-    }
-    return res
+    for (i in list.indices) res[list[i]] = res.getOrDefault(list[i], 0) + 1
+    return res.filter { it.value > 1 }
 }
-
 
 /**
  * Средняя
@@ -308,17 +273,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO() /*{
-    for (i in words.indices) {
-        val lettersInWord = mutableListOf<Char>()
-        for (j in words[i].indices) {
-            lettersInWord.add((words[i])[j])
-        }
-        for (g in (i + 1) until words.size) {
-
-        }
-    }
-}*/
+fun hasAnagrams(words: List<String>): Boolean = TODO()
 
 /**
  * Сложная
@@ -373,7 +328,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
             }
     }
     return if (res == Pair(0, 0)) Pair(-1, -1)
-    else res.sorted()
+    else res.sorted()//Сделать за один проход по списку
 }
 
 /**

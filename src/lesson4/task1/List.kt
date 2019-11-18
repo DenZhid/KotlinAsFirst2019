@@ -275,7 +275,7 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String =
     convert(n, base).map {
-        if (it <= 9) (it + 48).toChar() //сместить
+        if (it <= 9) (it + 48).toChar()
         else (it + 87).toChar()
     }.joinToString(separator = "")
 
@@ -409,15 +409,37 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-/*fun forThousandsRussian(element: Int): String =
+fun forThousandsRussian(element: Int): String =
     if (element == 0) ""
     else when {
-        (element % 100 in 11..19) -> forHundredsRussian(element) + forDozensRussian(element % 100) + "тысяч"
+        (element % 100 in 11..19) -> listOf(
+            forHundredsRussian(element),
+            forDozensRussian(element % 100),
+            "тысяч"
+        ).filter { it != "" }.joinToString(separator = " ")
         (element % 10 == 0) || ((element % 10 in 5..9) && (element % 100 !in 15..19)) ->
-            forHundredsRussian(element) + forDozensRussian(element % 100) + forUnitsRussian(element % 10) + "тысяч"
-        (element % 10 == 1) -> forHundredsRussian(element) + forDozensRussian(element % 100) + "одна тысяча"
-        (element % 10 == 2) -> forHundredsRussian(element) + forDozensRussian(element % 100) + "две тысячи"
-        else -> forHundredsRussian(element) + forDozensRussian(element % 100) + forUnitsRussian(element % 10) + " тысячи"
+            listOf(
+                forHundredsRussian(element),
+                forDozensRussian(element % 100),
+                forUnitsRussian(element % 10),
+                "тысяч"
+            ).filter { it != "" }.joinToString(separator = " ")
+        (element % 10 == 1) -> listOf(
+            forHundredsRussian(element),
+            forDozensRussian(element % 100),
+            "одна тысяча"
+        ).filter { it != "" }.joinToString(separator = " ")
+        (element % 10 == 2) -> listOf(
+            forHundredsRussian(element),
+            forDozensRussian(element % 100),
+            "две тысячи"
+        ).filter { it != "" }.joinToString(separator = " ")
+        else -> listOf(
+            forHundredsRussian(element),
+            forDozensRussian(element % 100),
+            forUnitsRussian(element % 10),
+            " тысячи"
+        ).filter { it != "" }.joinToString(separator = " ")
     }
 
 fun forHundredsRussian(element: Int): String =
@@ -472,13 +494,28 @@ fun forUnitsRussian(element: Int): String =
         7 -> "семь"
         8 -> "восемь"
         else -> "девять"
-    }*/
+    }
 
 
-fun russian(n: Int): String = TODO() /* when (digitNumber(n)) {
-    1 -> forUnitsRussian(n)
-    2 -> forDozensRussian(n) + " " + forUnitsRussian(n % 10)
-    3 -> forHundredsRussian(n) + " " + forDozensRussian(n % 100) + " " + forUnitsRussian(n % 10)
-    4 ->
-}*/
-
+fun russian(n: Int): String {
+    val digit = digitNumber(n)
+    return when {
+        digit == 1 -> forUnitsRussian(n)
+        (digit == 2) && (n in 10..19) -> forDozensRussian(n)
+        (digit == 2) && (n !in 10..19) -> listOf(
+            forDozensRussian(n),
+            forUnitsRussian(n % 10)
+        ).filter { it != "" }.joinToString(separator = " ")
+        digit == 3 -> listOf(
+            forHundredsRussian(n),
+            forDozensRussian(n % 100),
+            forUnitsRussian(n % 10)
+        ).filter { it != "" }.joinToString(separator = " ")
+        else -> listOf(
+            forThousandsRussian(n / 1000),
+            forHundredsRussian(n % 1000),
+            forDozensRussian(n % 100),
+            forUnitsRussian(n % 10)
+        ).filter { it != "" }.joinToString(separator = " ")
+    }
+}
