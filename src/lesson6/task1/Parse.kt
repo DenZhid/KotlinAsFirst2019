@@ -1,6 +1,8 @@
 @file:Suppress("UNUSED_PARAMETER", "ConvertCallChainIntoSequence")
 
 package lesson6.task1
+import java.lang.NumberFormatException
+import lesson2.task2.daysInMonth
 
 /**
  * Пример
@@ -69,7 +71,36 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun treatmentOfMonth(month: String): String {
+    return when (month) {
+        "января" -> "1"
+        "февраля" -> "2"
+        "марта" -> "3"
+        "апреля" -> "4"
+        "мая" -> "5"
+        "июня" -> "6"
+        "июля" -> "7"
+        "августа" -> "8"
+        "сентября" -> "9"
+        "октября" -> "10"
+        "ноября" -> "11"
+        "декабря" -> "12"
+        else -> month
+    }
+}
+
+fun dateStrToDigit(str: String): String = TODO() /*{
+    val parts = str.split(" ").toMutableList()
+    try {
+        parts[1] = treatmentOfMonth(parts[1])
+        val res = mutableListOf<Int>()
+        for (i in 0..2) res.add(parts[i].toInt())
+        if (res[0] != daysInMonth(res[1], res[2]))
+    } catch (e: NumberFormatException) {
+        return ""
+    }
+}*/
+
 
 /**
  * Средняя

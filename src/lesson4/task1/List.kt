@@ -326,27 +326,22 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun forThousandsRoman(element: Int): String {
-    var result = ""
+fun forThousandsRoman(element: Int): String = buildString {
     for (i in 1..element) {
-        result += "M"
+        append("M")
     }
-    return result
 }
 
 fun forHundredsRoman(element: Int): String =
     when (element) {
         0 -> ""
-        in 1..3 -> {
-            var result = ""
-            for (i in 1..element) result += "C"
-            result
+        in 1..3 -> buildString {
+            for (i in 1..element) append("C")
         }
         4 -> "CD"
-        in 5..8 -> {
-            var result = "D"
-            for (i in 1..element - 5) result += "C"
-            result
+        in 5..8 -> buildString {
+            append("D")
+            for (i in 1..element - 5) append("C")
         }
         else -> "CM"
     }
@@ -355,16 +350,13 @@ fun forHundredsRoman(element: Int): String =
 fun forDozensRoman(element: Int): String =
     when (element) {
         0 -> ""
-        in 1..3 -> {
-            var result = ""
-            for (i in 1..element) result += "X"
-            result
+        in 1..3 -> buildString {
+            for (i in 1..element) append("X")
         }
         4 -> "XL"
-        in 5..8 -> {
-            var result = "L"
-            for (i in 1..element - 5) result += "X"
-            result
+        in 5..8 -> buildString {
+            append("L")
+            for (i in 1..element - 5) append("X")
         }
         else -> "XC"
     }
@@ -372,35 +364,19 @@ fun forDozensRoman(element: Int): String =
 fun forUnitsRoman(element: Int): String =
     when (element) {
         0 -> ""
-        in 1..3 -> {
-            var result = ""
-            for (i in 1..element) result += "I"
-            result
+        in 1..3 -> buildString {
+            for (i in 1..element) append("I")
         }
         4 -> "IV"
-        in 5..8 -> {
-            var result = "V"
-            for (i in 1..element - 5) result += "I"
-            result
+        in 5..8 -> buildString {
+            append("V")
+            for (i in 1..element - 5) append("I")
         }
         else -> "IX"
     }
 
-fun roman(n: Int): String {
-    var nChanged = n
-    val list = mutableListOf<Int>()
-    for (i in 1..digitNumber(n)) {
-        list.add(nChanged % 10)
-        nChanged /= 10
-    }
-    return when (list.size) {
-        4 ->
-            forThousandsRoman(list[3]) + forHundredsRoman(list[2]) + forDozensRoman(list[1]) + forUnitsRoman(list[0])
-        3 -> forHundredsRoman(list[2]) + forDozensRoman(list[1]) + forUnitsRoman(list[0])
-        2 -> forDozensRoman(list[1]) + forUnitsRoman(list[0])
-        else -> forUnitsRoman(list[0])
-    }
-}
+fun roman(n: Int): String =
+    forThousandsRoman(n / 1000) + forHundredsRoman((n / 100) % 10) + forDozensRoman((n % 100) / 10) + forUnitsRoman(n % 10)
 
 /**
  * Очень сложная
@@ -448,7 +424,7 @@ fun forHundredsRussian(element: Int): String =
         1 -> "сто"
         2 -> "двести"
         3 -> "триста"
-        4 -> "честыреста"
+        4 -> "четыреста"
         5 -> "пятьсот"
         6 -> "шестьсот"
         7 -> "семьсот"
