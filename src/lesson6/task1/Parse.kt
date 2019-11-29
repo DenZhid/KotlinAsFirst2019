@@ -98,11 +98,11 @@ fun occurrencesPerMonth(parts: MutableList<String>): MutableList<String> = when 
         parts[0] = ""
         parts
     }
-    ((parts[1].toInt() % 2 != 0) || (parts[1] == "8") || (parts[1] == "10") || (parts[1] == "12")) && (parts[1] != "9") && (parts[2] != "11") && (parts[0].toInt() !in 1..31) -> {
+    ((parts[1].toInt() % 2 != 0) || (parts[1] == "8") || (parts[1] == "10") || (parts[1] == "12")) && (parts[1] != "9") && (parts[1] != "11") && (parts[0].toInt() !in 1..31) -> {
         parts[0] = ""
         parts
     }
-    ((parts[1].toInt() % 2 == 0) && (parts[1] != "8") && (parts[1] != "10") && (parts[1] != "12") || (parts[1] == "9") || (parts[2] == "11")) && (parts[0].toInt() !in 1..30) -> {
+    (((parts[1].toInt() % 2 == 0) && (parts[1] != "8") && (parts[1] != "10") && (parts[1] != "12")) || (parts[1] == "9") || (parts[1] == "11")) && (parts[0].toInt() !in 1..30) -> {
         parts[0] = ""
         parts
     }
@@ -152,7 +152,7 @@ fun backTreatmentOfMonth(month: String): String = when (month) {
 }
 
 fun dateDigitToStr(digital: String): String = when {
-    Regex("""^\d[1-9]\.\d[1-9]\.[1-9]\d*$""").find(digital) == null -> ""
+    Regex("""^\d[0-9]\.\d[1-9]\.[1-9]\d*$""").find(digital) == null -> ""
     else -> {
         val parts = digital.split(".").toMutableList()
         occurrencesPerMonth(parts)
@@ -181,7 +181,7 @@ fun dateDigitToStr(digital: String): String = when {
  */
 fun flattenPhoneNumber(phone: String): String {
     val matchResult =
-        Regex("""^\+[\d\s-]*\(\d[\d\s-]*\)[\d\s-]*$|^[\d\s-]*$|^\+[\d\s-]*$|^[\d\s-]*\(\d[\d\s-]*\)[\d\s-]*$""")
+        Regex("""^\+\d[\d -]*\(\d[\d -]*\)[\d -]*\d$|^[\d -]*\d$|^\+\d[\d -]*\d$|^[\d -]*\d\(\d[\d -]*\)[\d -]*\d$""")
     if (matchResult.find(phone) == null) return ""
     val parts = phone.split("")
     return parts.filter { it != "-" && it != "(" && it != ")" && it != " " }.joinToString(separator = "")
@@ -225,7 +225,7 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int = when {
-    !(expression).matches(Regex("""\d*( [+-] \d*)*""")) -> throw IllegalArgumentException()
+    !(expression).matches(Regex("""\d+( [+-] \d+)*""")) -> throw IllegalArgumentException()
     else -> {
         val parts = expression.split(" ")
         var res = parts[0].toInt()

@@ -134,6 +134,12 @@ class Tests {
                 mapOf("eGlD*%&O:p]W#6e\$-][|`</uV)-E<st|J&rxB,NzwP]1,f \\\"cKbm>0jC4KT=B\\np7DrP-Z-Cl>Xp0F>;0*o\\nI6\\n3\\n6R&.8]kG*0NDk/%pY,n-^T|o|RDB+RXj|7\\tnl\\t(HLpmhdP}t{\\t.g%,w_vS(L<BWjo" to "")
             )
         )
+        assertFalse(
+            containsIn(
+                mapOf("53Zh1!I\$`HM>nI\"&\$hNP&{3vErg/\"Y*CK294zp3LC>L;\")W\t>5)<7|Diq]J%>`ZjsA=)&)=AHR+NByx\\q}[ZywltLn_07mdNL~716eF1pVm-^PfD+ 9(pG\"2mpnIP\\8PMz@U&2}!{?[QXrbl5]\n;r^g=u(1%c$4L};#WRQ)@&UKp^CLL+1.~\$F{]C]3O^" to ""),
+                mapOf("" to "")
+            )
+        )
     }
 
     @Test
@@ -254,6 +260,7 @@ class Tests {
         assertTrue(canBuildFrom(listOf('a', 'b', 'o'), "baobab"))
         assertFalse(canBuildFrom(listOf('a', 'm', 'r'), "Marat"))
         assertTrue(canBuildFrom(listOf('V'), "v"))
+        assertFalse(canBuildFrom(listOf('a', 'a'), " "))
     }
 
     @Test
@@ -308,6 +315,21 @@ class Tests {
                     "Marat" to setOf("Mikhail", "Sveta"),
                     "Sveta" to setOf("Marat"),
                     "Mikhail" to setOf("Sveta")
+                )
+            )
+        )
+        assertEquals(
+            mapOf(
+                "1" to setOf("0"),
+                "2" to setOf("1", "0"),
+                "3" to setOf("2, 1, 0"),
+                "0" to setOf()
+            ),
+            propagateHandshakes(
+                mapOf(
+                    "1" to setOf("0"),
+                    "2" to setOf("1"),
+                    "3" to setOf("2")
                 )
             )
         )

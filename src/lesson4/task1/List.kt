@@ -475,22 +475,32 @@ fun forUnitsRussian(element: Int): String =
 
 fun russian(n: Int): String {
     val digit = digitNumber(n)
+    val forDozens = n % 100
     return when {
         digit == 1 -> forUnitsRussian(n)
-        (digit == 2) && (n in 10..19) -> forDozensRussian(n)
+        (digit == 2) && (forDozens in 10..19) -> forDozensRussian(n)
         (digit == 2) && (n !in 10..19) -> listOf(
             forDozensRussian(n),
             forUnitsRussian(n % 10)
         ).filter { it != "" }.joinToString(separator = " ")
-        digit == 3 -> listOf(
+        (digit == 3) && (forDozens in 10..19) -> listOf(
             forHundredsRussian(n),
-            forDozensRussian(n % 100),
+            forDozensRussian(forDozens)
+        ).filter { it != "" }.joinToString(separator = " ")
+        (digit == 3) && (forDozens !in 10..19) -> listOf(
+            forHundredsRussian(n),
+            forDozensRussian(forDozens),
             forUnitsRussian(n % 10)
+        ).filter { it != "" }.joinToString(separator = " ")
+        (digit > 3) && (forDozens in 10..19) -> listOf(
+            forThousandsRussian(n / 1000),
+            forHundredsRussian(n % 1000),
+            forDozensRussian(forDozens)
         ).filter { it != "" }.joinToString(separator = " ")
         else -> listOf(
             forThousandsRussian(n / 1000),
             forHundredsRussian(n % 1000),
-            forDozensRussian(n % 100),
+            forDozensRussian(forDozens),
             forUnitsRussian(n % 10)
         ).filter { it != "" }.joinToString(separator = " ")
     }
