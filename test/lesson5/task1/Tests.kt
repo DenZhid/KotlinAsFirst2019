@@ -128,6 +128,12 @@ class Tests {
         assertTrue(containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")))
         assertFalse(containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")))
         assertTrue(containsIn(mapOf(), mapOf()))
+        assertTrue(
+            containsIn(
+                mapOf(),
+                mapOf("eGlD*%&O:p]W#6e\$-][|`</uV)-E<st|J&rxB,NzwP]1,f \\\"cKbm>0jC4KT=B\\np7DrP-Z-Cl>Xp0F>;0*o\\nI6\\n3\\n6R&.8]kG*0NDk/%pY,n-^T|o|RDB+RXj|7\\tnl\\t(HLpmhdP}t{\\t.g%,w_vS(L<BWjo" to "")
+            )
+        )
     }
 
     @Test
@@ -321,6 +327,10 @@ class Tests {
         assertEquals(
             Pair(-1, -1),
             findSumOfTwo(listOf(1, 2, 3), 6)
+        )
+        assertEquals(
+            Pair(0, 1),
+            findSumOfTwo(listOf(2, 2), 4)
         )
     }
 

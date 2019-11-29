@@ -113,14 +113,11 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
-    if (a.isEmpty() && b.isEmpty()) return true
-    else {
-        for ((keyA, valueA) in a) {
-            if (valueA != b[keyA]) break
-            else return true
-        }
-        return false
+    for ((keyA, valueA) in a) {
+        if (b.containsValue(valueA)) break
+        else return false
     }
+    return true
 }
 
 /**
@@ -140,7 +137,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
 fun subtractOf(
     a: MutableMap<String, String>,
     b: Map<String, String>
-): Unit {
+) {
     for ((key, value) in b) if (a[key] == value) a.remove(key)
 }
 
@@ -151,7 +148,11 @@ fun subtractOf(
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = ((a.toSet()).filter { it in b.toSet() }).toList()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
+    val setOfA = a.toSet()
+    val setOfB = b.toSet()
+    return setOfA.filter { it in setOfB }.toList()
+}
 
 /**
  * Средняя
@@ -244,8 +245,11 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-    (word.toLowerCase().toSet().filter { it !in (chars.toString().toLowerCase().toSet()) }).isEmpty()
+fun canBuildFrom(chars: List<Char>, word: String): Boolean {
+    val charsToSet = chars.toString().toLowerCase().toSet()
+    val wordToSet = word.toLowerCase().toSet()
+    return (wordToSet.filter { it !in charsToSet }).isEmpty()
+}
 
 /**
  * Средняя
@@ -287,7 +291,7 @@ fun hasAnagrams(words: List<String>): Boolean {
         if (k > 0) break
     }
     return (k == 1)
-}
+}//Переделать
 
 /**
  * Сложная
@@ -313,18 +317,18 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO() /*{
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val res = mutableMapOf<String, Set<String>>()
-    for ((name, friend) in friends) {
-        for (element in friend) {
-            if (res[element] == null) {
-                res[element] = setOf<String>() + friends[element]
-
-            }
+    for ((human, mates) in friends) {
+        res[human] = mates
+        for (people in mates) {
+            if (friends[people] == null) res[people] = setOf()
+            res[human] =
+                ((res[human] ?: setOf()) + (friends.getOrDefault(people, setOf()).filter { it != human }).toList())
         }
     }
     return res
-}*/
+}
 
 /**
  * Сложная
@@ -346,14 +350,14 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     var res = Pair(0, 0)
     for (i in list.indices) {
-        for (j in (i + 1) until list.size)
-            if (list[i] + list[j] == number) {
-                res = Pair(i, j)
-                break
-            }
+        val searchedNumber = number - list[i]
+        if ((searchedNumber in list) && (i != list.indexOf(searchedNumber))) {
+            res = Pair(i, list.indexOf(searchedNumber))
+            break
+        }
     }
     return if (res == Pair(0, 0)) Pair(-1, -1)
-    else res.sorted()//Сделать за один проход по списку
+    else res.sorted()
 }
 
 /**
@@ -377,4 +381,17 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+
+
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO() /*{
+    val res = setOf<String>()
+    var changedCapacity = capacity
+    var totalCost = 0
+    var lastTotalCost = 0
+    for ((name, characteristic) in treasures) {
+        if ((changedCapacity > characteristic.first) && (totalCost < lastTotalCost + characteristic.second)) {
+            totalCost = lastTotalCost + characteristic.second
+            lastTotalCost = totalCost - characteristic.second
+        }
+    }
+}*/

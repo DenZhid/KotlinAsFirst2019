@@ -414,7 +414,7 @@ fun forThousandsRussian(element: Int): String =
             forHundredsRussian(element),
             forDozensRussian(element % 100),
             forUnitsRussian(element % 10),
-            " тысячи"
+            "тысячи"
         ).filter { it != "" }.joinToString(separator = " ")
     }
 
