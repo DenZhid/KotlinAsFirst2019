@@ -114,8 +114,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
     for ((keyA, valueA) in a) {
-        if (b.containsValue(valueA)) break
-        else return false
+        if (keyA !in b || valueA != b[keyA]) return false
     }
     return true
 }
@@ -246,9 +245,9 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val charsToSet = chars.toString().toLowerCase().toSet()
+    val charsToSet = chars.joinToString(separator = "").toLowerCase().toSet()
     val wordToSet = word.toLowerCase().toSet()
-    return (wordToSet.filter { it !in charsToSet }).isEmpty()
+    return wordToSet.none { it !in charsToSet }
 }
 
 /**
@@ -281,9 +280,9 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
 fun hasAnagrams(words: List<String>): Boolean {
     var k = 0
     for (i in words.indices) {
-        val setOfLetters = words[i].toSet()
+        val listOfLetters = words[i].toList()
         for (j in i + 1 until words.size) {
-            if (words[j].none { it !in setOfLetters }) {
+            if (words[j].none { it !in listOfLetters }) {
                 k++
                 break
             }

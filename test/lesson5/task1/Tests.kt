@@ -140,6 +140,12 @@ class Tests {
                 mapOf("" to "")
             )
         )
+        assertFalse(
+            containsIn(
+                mapOf("E\\\"eBLz[8TG.)z" to ""),
+                mapOf("{xb0kr_5oITf>6/YqA%\\g\"3u1U^<\tNl<tD5:<OH8{Ik\\k'{UudZ\\;\"H2<;e}){)P=Q:@,q&2QF4l=$<N" to "")
+            )
+        )
     }
 
     @Test
@@ -286,6 +292,7 @@ class Tests {
         assertFalse(hasAnagrams(emptyList()))
         assertTrue(hasAnagrams(listOf("рот", "свет", "тор")))
         assertFalse(hasAnagrams(listOf("рот", "свет", "код", "дверь")))
+        assertFalse(hasAnagrams(listOf("тор", "торро")))
     }
 
     @Test
@@ -330,6 +337,22 @@ class Tests {
                     "1" to setOf("0"),
                     "2" to setOf("1"),
                     "3" to setOf("2")
+                )
+            )
+        )
+        assertEquals(
+            mapOf(
+                "1" to setOf(""),
+                "2" to setOf("0", "3", "1"),
+                "0" to setOf("3", "1"),
+                "3" to setOf("1")
+            ),
+            propagateHandshakes(
+                mapOf(
+                    "1" to setOf(""),
+                    "2" to setOf("0"),
+                    "0" to setOf("3"),
+                    "3" to setOf("1")
                 )
             )
         )

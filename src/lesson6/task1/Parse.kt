@@ -90,11 +90,11 @@ fun treatmentOfMonth(month: String): String = when (month) {
 }
 
 fun occurrencesPerMonth(parts: MutableList<String>): MutableList<String> = when {
-    (parts[1].toInt() == 2) && ((parts[2].toInt() % 400 == 0) || (parts[2].toInt() % 100 != 0) && (parts[2].toInt() % 4 == 0)) && (parts[0].toInt() !in 1..29) -> {
+    (parts[1].toInt() == 2) && ((parts[2].toInt() % 400 == 0) || ((parts[2].toInt() % 100 != 0) && (parts[2].toInt() % 4 == 0))) && (parts[0].toInt() !in 1..29) -> {
         parts[0] = ""
         parts
     }
-    (parts[1].toInt() == 2) && (parts[2].toInt() % 400 != 0) && (parts[0].toInt() !in 1..28) -> {
+    (parts[1].toInt() == 2) && ((parts[2].toInt() % 400 != 0) && (parts[2].toInt() % 4 != 0)) && (parts[0].toInt() !in 1..28) -> {
         parts[0] = ""
         parts
     }
@@ -197,10 +197,10 @@ fun flattenPhoneNumber(phone: String): String {
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO() /*when {
-    (Regex("""[\d %-]*\d[\d %-]*""").find(jumps) == null) -> -1
+fun bestLongJump(jumps: String): Int = when {
+    (Regex("""[\d %-]+\d[\d %-]+""").find(jumps) == null) -> -1
     else -> jumps.split("").filter { it != "-" || it != "%" || it != " " }.map { it.toInt() }.max() ?: -1
-}*/
+}
 
 /**
  * Сложная
@@ -248,16 +248,18 @@ fun plusMinus(expression: String): Int = when {
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()/*{
+fun firstDuplicateIndex(str: String): Int {
     val parts = str.split("")
     var res = -1
     for (element in parts) {
         val matchWord = element.toRegex().find(str)
         if (matchWord != null) {
-        res = matchWord.range.first
+            res = matchWord.range.first
+            break
         }
     }
-}*/
+    return res
+}
 
 /**
  * Сложная
