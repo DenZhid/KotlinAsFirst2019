@@ -94,7 +94,7 @@ fun occurrencesPerMonth(parts: MutableList<String>): MutableList<String> = when 
         parts[0] = ""
         parts
     }
-    (parts[1].toInt() == 2) && ((parts[2].toInt() % 400 != 0) && (parts[2].toInt() % 4 != 0)) && (parts[0].toInt() !in 1..28) -> {
+    (parts[1].toInt() == 2) && ((parts[2].toInt() % 400 != 0) || ((parts[2].toInt() % 100 == 0) && (parts[2].toInt() % 4 != 0))) && (parts[0].toInt() !in 1..28) -> {
         parts[0] = ""
         parts
     }
