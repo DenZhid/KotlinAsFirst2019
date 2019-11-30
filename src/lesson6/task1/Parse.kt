@@ -2,6 +2,7 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
 import java.lang.IllegalArgumentException
 import java.lang.NumberFormatException
 import java.lang.IndexOutOfBoundsException
@@ -89,24 +90,11 @@ fun treatmentOfMonth(month: String): String = when (month) {
     else -> month
 }
 
-fun occurrencesPerMonth(parts: MutableList<String>): MutableList<String> = when {
-    (parts[1].toInt() == 2) && ((parts[2].toInt() % 400 == 0) || ((parts[2].toInt() % 100 != 0) && (parts[2].toInt() % 4 == 0))) && (parts[0].toInt() !in 1..29) -> {
+fun occurrencesPerMonth(parts: MutableList<String>): MutableList<String> {
+    return if (daysInMonth(parts[1].toInt(), parts[2].toInt()) < parts[0].toInt()) {
         parts[0] = ""
         parts
-    }
-    (parts[1].toInt() == 2) && ((parts[2].toInt() % 400 != 0) || ((parts[2].toInt() % 100 == 0) && (parts[2].toInt() % 4 != 0))) && (parts[0].toInt() !in 1..28) -> {
-        parts[0] = ""
-        parts
-    }
-    ((parts[1].toInt() % 2 != 0) || (parts[1] == "8") || (parts[1] == "10") || (parts[1] == "12")) && (parts[1] != "9") && (parts[1] != "11") && (parts[0].toInt() !in 1..31) -> {
-        parts[0] = ""
-        parts
-    }
-    (((parts[1].toInt() % 2 == 0) && (parts[1] != "8") && (parts[1] != "10") && (parts[1] != "12")) || (parts[1] == "9") || (parts[1] == "11")) && (parts[0].toInt() !in 1..30) -> {
-        parts[0] = ""
-        parts
-    }
-    else -> parts
+    } else parts
 }
 
 fun dateStrToDigit(str: String): String {
@@ -148,17 +136,19 @@ fun backTreatmentOfMonth(month: String): String = when (month) {
     "09" -> "сентября"
     "10" -> "октября"
     "11" -> "ноября"
-    else -> "декабря"
+    "12" -> "декабря"
+    else -> ""
 }
 
 fun dateDigitToStr(digital: String): String = when {
-    Regex("""^\d[0-9]\.\d[1-9]\.[1-9]\d*$""").find(digital) == null -> ""
+    Regex("""^\d[0-9]\.\d[0-9]\.[1-9]\d*$""").find(digital) == null -> ""
     else -> {
         val parts = digital.split(".").toMutableList()
         occurrencesPerMonth(parts)
         parts[1] = backTreatmentOfMonth(parts[1])
         try {
-            String.format("%s %s %s", parts[0].toInt(), parts[1], parts[2])
+            if (parts[1] == "") ""
+            else String.format("%s %s %s", parts[0].toInt(), parts[1], parts[2])
         } catch (e: NumberFormatException) {
             ""
         }

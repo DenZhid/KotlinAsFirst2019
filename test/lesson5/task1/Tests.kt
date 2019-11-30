@@ -293,6 +293,24 @@ class Tests {
         assertTrue(hasAnagrams(listOf("рот", "свет", "тор")))
         assertFalse(hasAnagrams(listOf("рот", "свет", "код", "дверь")))
         assertFalse(hasAnagrams(listOf("тор", "торро")))
+        assertFalse(
+            hasAnagrams
+                (
+                listOf(
+                    "",
+                    "a",
+                    "i",
+                    "aaaaaaaaaaaaaaraaaaaaaaaaaaaaaa/v&|^g{|q| )ay`(mb5J_#{YM",
+                    "(^r",
+                    ";S.(USF-7%ou&-r=YE\n",
+                    "#sRsOg",
+                    "*O!",
+                    "=i(9$.Sp*tWcQl^+%z",
+                    "JP'NYs+d:;}']I",
+                    "Fcw?C)Jt(ow.oo3W+l0|=(<Co([B}A*C0K[SLM.nU}$6rZ+m/;h`dM\t5&qaRo:c#f>"
+                )
+            )
+        )
     }
 
     @Test
@@ -372,6 +390,25 @@ class Tests {
                 )
             )
         )
+        assertEquals(
+            mapOf(
+                "0" to setOf("1", "2"),
+                "2" to setOf(),
+                "3" to setOf(),
+                "1" to setOf("2"),
+                "4" to setOf("0", "1", "2")
+
+            ),
+            propagateHandshakes(
+                mapOf(
+                    "0" to setOf("1"),
+                    "2" to setOf(),
+                    "3" to setOf(),
+                    "1" to setOf("2"),
+                    "4" to setOf("0")
+                )
+            )
+        )
     }
 
     @Test
@@ -417,6 +454,25 @@ class Tests {
             bagPacking(
                 mapOf("0" to (436 to 120), "1" to (413 to 116)),
                 716
+            )
+        )
+        assertEquals(
+            setOf("10", "8", "7", "6", "5", "4", "3", "2", "1", "0"),
+            bagPacking(
+                mapOf(
+                    "0" to (1 to 1),
+                    "1" to (457 to 229),
+                    "2" to (1 to 1),
+                    "3" to (1 to 1),
+                    "4" to (1 to 1),
+                    "5" to (167 to 87),
+                    "6" to (1 to 1),
+                    "7" to (1 to 1),
+                    "8" to (1 to 1),
+                    "9" to (472 to 219),
+                    "10" to (418 to 148)
+                ),
+                1066
             )
         )
     }
