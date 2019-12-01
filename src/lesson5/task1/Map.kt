@@ -3,6 +3,7 @@
 package lesson5.task1
 
 import ru.spbstu.wheels.sorted
+import kotlin.math.max
 
 /**
  * Пример
@@ -381,25 +382,26 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val mutableTreasures = treasures.toMutableMap()
-    val res = mutableSetOf<String>()
-    var changedCapacity = capacity
-    while (mutableTreasures.isNotEmpty()) {
-        var maxValue = 0
-        var capacityOfMaxValue = 0
-        var nameOfMaxValue = ""
-        for ((name, value) in mutableTreasures) {
-            if (maxValue < value.second) {
-                maxValue = value.second
-                capacityOfMaxValue = value.first
-                nameOfMaxValue = name
+    val listOfNames = mutableListOf<String>()
+    val listOfCounts = mutableListOf<Int>()
+    val listOfWeights = mutableListOf<Int>()
+    var res = setOf<String>()
+    for ((name, characteristic) in treasures) {
+        listOfNames.add(name)
+        listOfCounts.add(characteristic.second)
+        listOfWeights.add(characteristic.first)
+    }
+    val array = Array(listOfNames.size + 1) { Array(capacity) { 0 } }
+    for (i in 1 until listOfNames.size + 1) {
+        for (j in 0 until capacity) {
+            if (listOfWeights[i - 1] > j) array[i][j] = array[i - 1][j]
+            else {
+                val maxBetween = max(array[i - 1][j], array[i - 1][j - listOfWeights[i - 1]] + listOfCounts[i - 1])
+                array[i][j] = maxBetween
+                if (maxBetween == array[i - 1][j - listOfWeights[i - 1]] + listOfCounts[i - 1]) res =
+                    res + listOfNames[i - 1]
             }
         }
-        if (changedCapacity - capacityOfMaxValue >= 0) {
-            res.add(nameOfMaxValue)
-            changedCapacity -= capacityOfMaxValue
-        }
-        mutableTreasures.remove(nameOfMaxValue)
     }
     return res
 }

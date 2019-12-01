@@ -113,7 +113,6 @@ fun dateStrToDigit(str: String): String {
     return String.format("%02d.%02d.%d", res[0], res[1], res[2])
 }
 
-
 /**
  * Средняя
  *
@@ -141,7 +140,7 @@ fun backTreatmentOfMonth(month: String): String = when (month) {
 }
 
 fun dateDigitToStr(digital: String): String = when {
-    Regex("""^\d[0-9]\.\d[0-9]\.[1-9]\d*$""").find(digital) == null -> ""
+    Regex("""^\d\d\.\d\d\.\d*$""").find(digital) == null -> ""
     else -> {
         val parts = digital.split(".").toMutableList()
         occurrencesPerMonth(parts)
@@ -188,8 +187,8 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int = when {
-    (Regex("""[\d %-]+\d[\d %-]+""").find(jumps) == null) -> -1
-    else -> jumps.split("").filter { it != "-" || it != "%" || it != " " }.map { it.toInt() }.max() ?: -1
+    !jumps.matches(Regex("""[\d %-]+\d[\d %-]+""")) -> -1
+    else -> jumps.split(" ").filter { it != "-" && it != "%" }.map { it.toInt() }.max() ?: -1
 }
 
 /**
@@ -203,7 +202,22 @@ fun bestLongJump(jumps: String): Int = when {
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    if (!Regex("""^(\d* [+\-%]*)+$""").matches(jumps)) return -1
+    val someList = Regex("""(\d* [+\-%]*)""").findAll(jumps)
+    val someList2 = mutableListOf<String>()
+    for (element in someList)
+        if (element.value.contains(Regex("""\+"""))) someList2.add(element.value)
+    return if (someList2.isEmpty()) -1
+    else {
+        for (i in someList2.indices) someList2[i] =
+            someList2[i].split("").filter { it != " " && it != "+" && it != "-" && it != "%" }
+                .joinToString(separator = "")
+        val res = mutableListOf<Int>()
+        for (i in someList2.indices) res.add(someList2[i].toInt())
+        res.max() ?: -1
+    }
+}
 
 /**
  * Сложная
