@@ -7,6 +7,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlin.math.abs
 
 /**
  * Точка на плоскости
@@ -79,14 +80,21 @@ data class Circle(val center: Point, val radius: Double) {
      * расстояние между их центрами минус сумма их радиусов.
      * Расстояние между пересекающимися окружностями считать равным 0.0.
      */
-    fun distance(other: Circle): Double = TODO()
+    fun distance(other: Circle): Double {
+        val radiiDifference = abs(radius - other.radius)
+        val sumOfRadii = radius + other.radius
+        val distanceBetweenCenters = center.distance(other.center)
+        return if (radiiDifference < distanceBetweenCenters && sumOfRadii > distanceBetweenCenters) 0.0
+        else distanceBetweenCenters - sumOfRadii
+    }
 
     /**
      * Тривиальная
      *
      * Вернуть true, если и только если окружность содержит данную точку НА себе или ВНУТРИ себя
      */
-    fun contains(p: Point): Boolean = TODO()
+    fun contains(p: Point): Boolean =
+        sqr(center.x - p.x) + sqr(center.y - p.y) <= sqr(radius)
 }
 
 /**

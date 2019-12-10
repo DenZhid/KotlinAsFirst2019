@@ -3,7 +3,7 @@
 package lesson5.task1
 
 import ru.spbstu.wheels.sorted
-import kotlin.math.max
+//import kotlin.math.max
 
 /**
  * Пример
@@ -82,7 +82,6 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
     for (word in text) res.add(word)
     return res
 }
-
 
 /**
  * Простая
@@ -282,8 +281,9 @@ fun hasAnagrams(words: List<String>): Boolean {
     var k = 0
     for (i in words.indices) {
         val listOfLetters = words[i].toList()
+        val sizeOfListOfLetters = listOfLetters.size
         for (j in i + 1 until words.size) {
-            if (words[j].none { it !in listOfLetters }) {
+            if (words[j].none { it !in listOfLetters } && sizeOfListOfLetters == words[j].length) {
                 k++
                 break
             }
@@ -291,7 +291,7 @@ fun hasAnagrams(words: List<String>): Boolean {
         if (k > 0) break
     }
     return (k == 1)
-}//Переделать
+}
 
 /**
  * Сложная
@@ -318,13 +318,14 @@ fun hasAnagrams(words: List<String>): Boolean {
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    val res = mutableMapOf<String, Set<String>>()
-    for ((human, mates) in friends) {
-        res[human] = mates
-        for (people in mates) {
-            if (friends[people] == null) res[people] = setOf()
-            res[human] =
-                ((res[human] ?: setOf()) + (friends.getOrDefault(people, setOf()).filter { it != human }).toList())
+    val res = friends.toMutableMap()
+    for (i in 0 until friends.size) {
+        for ((human, mates) in friends) {
+            for (people in mates) {
+                if (friends[people] == null) res[people] = setOf()
+                res[human] =
+                    ((res[human] ?: setOf()) + (res.getOrDefault(people, setOf()).filter { it != human }).toList())
+            }
         }
     }
     return res
@@ -358,7 +359,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     }
     return if (res == Pair(0, 0)) Pair(-1, -1)
     else res.sorted()
-}
+}//Исправить
 
 /**
  * Очень сложная
@@ -381,7 +382,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO() /*{
     val listOfNames = mutableListOf<String>()
     val listOfCounts = mutableListOf<Int>()
     val listOfWeights = mutableListOf<Int>()
@@ -404,5 +405,5 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
         }
     }
     return res
-}
+}*/
 

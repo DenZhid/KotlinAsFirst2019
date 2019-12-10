@@ -311,6 +311,14 @@ class Tests {
                 )
             )
         )
+        assertFalse(
+            hasAnagrams(
+                listOf(
+                    "a",
+                    ""
+                )
+            )
+        )
     }
 
     @Test
@@ -360,14 +368,14 @@ class Tests {
         )
         assertEquals(
             mapOf(
-                "1" to setOf(""),
+                "1" to setOf(),
                 "2" to setOf("0", "3", "1"),
                 "0" to setOf("3", "1"),
                 "3" to setOf("1")
             ),
             propagateHandshakes(
                 mapOf(
-                    "1" to setOf(""),
+                    "1" to setOf(),
                     "2" to setOf("0"),
                     "0" to setOf("3"),
                     "3" to setOf("1")
@@ -379,7 +387,8 @@ class Tests {
                 "1f0" to setOf("136", "1"),
                 "108" to setOf("1f0", "136", "1"),
                 "1e" to setOf(),
-                "1" to setOf()
+                "1" to setOf(),
+                "136" to setOf("1f0", "1")
             ),
             propagateHandshakes(
                 mapOf(
@@ -406,6 +415,22 @@ class Tests {
                     "3" to setOf(),
                     "1" to setOf("2"),
                     "4" to setOf("0")
+                )
+            )
+        )
+        assertEquals(
+            mapOf(
+                "0" to setOf("1"),
+                "1" to setOf(),
+                "2" to setOf("3", "0", "1"),
+                "3" to setOf("0", "1")
+            ),
+            propagateHandshakes(
+                mapOf(
+                    "0" to setOf("1"),
+                    "1" to setOf(),
+                    "2" to setOf("3"),
+                    "3" to setOf("0")
                 )
             )
         )
@@ -473,6 +498,13 @@ class Tests {
                     "10" to (418 to 148)
                 ),
                 1066
+            )
+        )
+        assertEquals(
+            setOf("0"),
+            bagPacking(
+                mapOf("0" to (1 to 1)),
+                1
             )
         )
     }

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class   Tests {
+class Tests {
 
     private fun assertFileContent(name: String, expectedContent: String) {
         val file = File(name)

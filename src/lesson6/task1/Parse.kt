@@ -88,7 +88,7 @@ fun treatmentOfMonth(month: String): String = when (month) {
     "ноября" -> "11"
     "декабря" -> "12"
     else -> month
-}
+}//Исправить
 
 fun occurrencesPerMonth(parts: MutableList<String>): MutableList<String> {
     return if (daysInMonth(parts[1].toInt(), parts[2].toInt()) < parts[0].toInt()) {
@@ -111,7 +111,7 @@ fun dateStrToDigit(str: String): String {
         return ""
     }
     return String.format("%02d.%02d.%d", res[0], res[1], res[2])
-}
+}//Исправить
 
 /**
  * Средняя
@@ -152,7 +152,7 @@ fun dateDigitToStr(digital: String): String = when {
             ""
         }
     }
-}
+}//Исправить
 
 /**
  * Средняя
@@ -217,7 +217,7 @@ fun bestHighJump(jumps: String): Int {
         for (i in someList2.indices) res.add(someList2[i].toInt())
         res.max() ?: -1
     }
-}
+}//Исправить
 
 /**
  * Сложная
@@ -229,7 +229,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int = when {
-    !(expression).matches(Regex("""\d+( [+-] \d+)*""")) -> throw IllegalArgumentException()
+    !expression.matches(Regex("""\d+( [+-] \d+)*""")) -> throw IllegalArgumentException()
     else -> {
         val parts = expression.split(" ")
         var res = parts[0].toInt()
@@ -253,14 +253,12 @@ fun plusMinus(expression: String): Int = when {
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
 fun firstDuplicateIndex(str: String): Int {
-    val parts = str.split("")
+    val parts = str.toLowerCase().split(" ")
     var res = -1
-    for (element in parts) {
-        val matchWord = element.toRegex().find(str)
-        if (matchWord != null) {
-            res = matchWord.range.first
-            break
-        }
+    var currentIndex = 0
+    for (i in 0 until parts.size - 1) {
+        if (parts[i] == parts[i + 1]) res = currentIndex
+        else currentIndex += parts[i].length + 1
     }
     return res
 }
@@ -276,7 +274,28 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val parts = description.split("; ")
+    val mapOfProduct = mutableMapOf<String, Double>()
+    try {
+        for (elements in parts) {
+            val forMap = elements.split(" ")
+            if (forMap[1].toDouble() < 0.0) return ""
+            mapOfProduct[forMap[0]] = forMap[1].toDouble()
+        }
+    } catch (e: NumberFormatException) {
+        return ""
+    } catch (e: IndexOutOfBoundsException) {
+        return ""
+    }
+    var maxPrice = 0.0
+    var nameOfMaxPricedProduct = ""
+    for ((name, price) in mapOfProduct) if (price > maxPrice) {
+        maxPrice = price
+        nameOfMaxPricedProduct = name
+    }
+    return nameOfMaxPricedProduct
+}
 
 /**
  * Сложная
