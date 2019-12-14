@@ -55,20 +55,22 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO() /*{
     val res = mutableMapOf<String, Int>()
-    for (element in substrings) res[element] = 0
     for (line in File(inputName).readLines()) {
-        for (word in line.split(Regex("""\s"""))) {
-            for (element in substrings)
-                if (element.toLowerCase() in word.toLowerCase()) {
-                    for (occurrence in element.toLowerCase().toRegex().findAll(word.toLowerCase())) {
-                        res[element] = res[element]!! + 1
-                        println("$element  -  $res[element]")
-                    }
+        for (word in line.split(" ")) {
+            for (element in substrings) {
+                val wordLength = word.length
+                val elementLength = element.length
+                if (wordLength >= elementLength) {
+                    for (i in 0..wordLength - elementLength + 1)
+                        if (word.substring(i, elementLength) == element)
+                            res[element] = res.getOrDefault(element, 0) + 1
                 }
+            }
         }
     }
     return res
 }*/
+
 
 /**
  * Средняя
@@ -84,16 +86,25 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    /*val writer = File(outputName).bufferedWriter()
-    for (line in File(inputName).readLines()) {
-        for (word in line.split(Regex("""\s"""))) {
-            if (Regex("""[ЖжШшЧчЩщ][ЫыЯяЮю]""").find(word) != null) {}
-            writer.write(" $word")
+    File(outputName).bufferedWriter().use {
+        val mistakes = mapOf(
+            'Ы' to 'И',
+            'ы' to 'и',
+            'Я' to 'А',
+            'я' to 'а',
+            'Ю' to 'У',
+            'ю' to 'у'
+        )
+        for (line in File(inputName).readLines()) {
+            it.write(line[0].toString())
+            for (i in 1 until line.length) {
+                if (Regex("""[ЖжШшЧчЩщ]""").find(line[i - 1].toString()) != null && (line[i].toString()) in "ЫыЯяЮю") {
+                    it.write(mistakes[line[i]].toString())
+                } else it.write(line[i].toString())
+            }
+            it.newLine()
         }
-        writer.newLine()
     }
-    writer.close()//???*/
-    TODO()
 }
 
 /**

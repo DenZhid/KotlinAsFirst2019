@@ -3,6 +3,7 @@
 package lesson8.task1
 
 import lesson1.task1.sqr
+import java.lang.IllegalArgumentException
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -114,7 +115,22 @@ data class Segment(val begin: Point, val end: Point) {
  * Дано множество точек. Вернуть отрезок, соединяющий две наиболее удалённые из них.
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
-fun diameter(vararg points: Point): Segment = TODO()
+fun diameter(vararg points: Point): Segment {
+    if (points.toList().size >= 2) {
+        var maxDistance = 0.0
+        var segment = Segment(Point(0.0, 0.0), Point(0.0, 0.0))
+        for (i in points.indices) {
+            for (j in (i + 1) until points.size) {
+                val distanceBetweenPoints = points[i].distance(points[j])
+                if (distanceBetweenPoints > maxDistance) {
+                    maxDistance = distanceBetweenPoints
+                    segment = Segment(points[i], points[j])
+                }
+            }
+        }
+        return segment
+    } else throw IllegalArgumentException()
+}
 
 /**
  * Простая

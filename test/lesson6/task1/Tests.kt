@@ -164,4 +164,31 @@ class Tests {
         assertThrows(IllegalArgumentException::class.java) { computeDeviceCells(10, "+>+>[+>", 3) }
         assertThrows(IllegalStateException::class.java) { computeDeviceCells(20, ">>>>>>>>>>>>>", 12) }
     }
+
+    @Test
+    @Tag("FinalTest")
+    fun resultsOfMatch() {
+        assertEquals(
+            mapOf(
+                "Зенит" to 7,
+                "Спартак" to 0,
+                "ЦСКА" to 1,
+                "Барнаулец" to 1,
+                "Подмоскович" to 1
+            ),
+            resultsOfMatch("Зенит-Спартак 1:0; Зенит-ЦСКА 0:0; Барнаулец-Зенит 0:2; Подмоскович-Барнаулец 4:4")
+        )
+        assertEquals(
+            mapOf(
+                "Зенит" to 3,
+                "Спартак" to 0
+            ),
+            resultsOfMatch("Зенит-Спартак 1:0")
+        )
+        assertThrows(IllegalArgumentException::class.java) { resultsOfMatch("") }
+        assertThrows(IllegalArgumentException::class.java) { resultsOfMatch("ЗенитСпартак 1:0; ЗенитЦСКА 0:0") }
+        assertThrows(IllegalArgumentException::class.java) { resultsOfMatch("Зенит-Спартак 10; Зенит-ЦСКА 00") }
+        assertThrows(IllegalArgumentException::class.java) { resultsOfMatch("Зенит-Спартак 1:0; Зенит-ЦСКА 0:0;") }
+        assertThrows(IllegalArgumentException::class.java) { resultsOfMatch("Зенит-Спартак a:v; Зенит-ЦСКА c:f") }
+    }
 }

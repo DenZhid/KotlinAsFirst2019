@@ -4,6 +4,7 @@ package lesson6.task1
 
 import lesson2.task2.daysInMonth
 import java.lang.IllegalArgumentException
+//import java.lang.IllegalStateException
 import java.lang.NumberFormatException
 import java.lang.IndexOutOfBoundsException
 
@@ -74,44 +75,40 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun treatmentOfMonth(month: String): String = when (month) {
-    "января" -> "1"
-    "февраля" -> "2"
-    "марта" -> "3"
-    "апреля" -> "4"
-    "мая" -> "5"
-    "июня" -> "6"
-    "июля" -> "7"
-    "августа" -> "8"
-    "сентября" -> "9"
-    "октября" -> "10"
-    "ноября" -> "11"
-    "декабря" -> "12"
-    else -> month
-}//Исправить
-
-fun occurrencesPerMonth(parts: MutableList<String>): MutableList<String> {
-    return if (daysInMonth(parts[1].toInt(), parts[2].toInt()) < parts[0].toInt()) {
-        parts[0] = ""
-        parts
-    } else parts
+fun treatmentOfMonth(month: String): Int? = when (month) {
+    "января" -> 1
+    "февраля" -> 2
+    "марта" -> 3
+    "апреля" -> 4
+    "мая" -> 5
+    "июня" -> 6
+    "июля" -> 7
+    "августа" -> 8
+    "сентября" -> 9
+    "октября" -> 10
+    "ноября" -> 11
+    "декабря" -> 12
+    else -> null
 }
 
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ").toMutableList()
-    val res = mutableListOf<Int>()
-    try {
-        if (parts.size > 3) parts[2] = ""
-        parts[1] = treatmentOfMonth(parts[1])
-        occurrencesPerMonth(parts)
-        for (i in 0..2) res.add(parts[i].toInt())
+    val e = NumberFormatException()
+    return try {
+        val day = parts[0].toInt()
+        val month = treatmentOfMonth(parts[1])!!.toInt()
+        val year = parts[2].toInt()
+        if (parts.size > 3) throw e
+        if (daysInMonth(month, year) < day) throw e
+        String.format("%02d.%02d.%d", day, month, year)
     } catch (e: NumberFormatException) {
-        return ""
+        ""
     } catch (e: IndexOutOfBoundsException) {
-        return ""
+        ""
+    } catch (e: KotlinNullPointerException) {
+        ""
     }
-    return String.format("%02d.%02d.%d", res[0], res[1], res[2])
-}//Исправить
+}
 
 /**
  * Средняя
@@ -140,19 +137,20 @@ fun backTreatmentOfMonth(month: String): String = when (month) {
 }
 
 fun dateDigitToStr(digital: String): String = when {
-    Regex("""^\d\d\.\d\d\.\d*$""").find(digital) == null -> ""
-    else -> {
-        val parts = digital.split(".").toMutableList()
-        occurrencesPerMonth(parts)
-        parts[1] = backTreatmentOfMonth(parts[1])
-        try {
-            if (parts[1] == "") ""
-            else String.format("%s %s %s", parts[0].toInt(), parts[1], parts[2])
-        } catch (e: NumberFormatException) {
-            ""
+    Regex("""^\d\d\.\d\d\.\d*$""").containsMatchIn(digital) -> {
+        val parts = digital.split(".")
+        val day = parts[0].toInt()
+        val month = backTreatmentOfMonth(parts[1])
+        val year = parts[2].toInt()
+        if (daysInMonth(parts[1].toInt(), year) < day) ""
+        else {
+            if (month == "") ""
+            else String.format("%s %s %s", day, month, year)
+
         }
     }
-}//Исправить
+    else -> ""
+}
 
 /**
  * Средняя
@@ -208,16 +206,15 @@ fun bestHighJump(jumps: String): Int {
     val someList2 = mutableListOf<String>()
     for (element in someList)
         if (element.value.contains(Regex("""\+"""))) someList2.add(element.value)
-    return if (someList2.isEmpty()) -1
-    else {
-        for (i in someList2.indices) someList2[i] =
-            someList2[i].split("").filter { it != " " && it != "+" && it != "-" && it != "%" }
-                .joinToString(separator = "")
-        val res = mutableListOf<Int>()
-        for (i in someList2.indices) res.add(someList2[i].toInt())
-        res.max() ?: -1
-    }
-}//Исправить
+    return if (someList2.isNotEmpty()) {
+        var max = 0
+        for (i in someList2.indices) {
+            val number = (someList2[i].split(" "))[0].toInt()
+            if (number > max) max = number
+        }
+        max
+    } else -1
+}
 
 /**
  * Сложная
@@ -352,4 +349,88 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    TODO()
+/* if (Regex("""^[+\-<> ]*(\[[+\-<> \[\]]*\])*$""").matches(commands)) {
+        val arrayOfCells = Array(cells) { 0 }
+        var i = cells / 2
+        var mutableLimit = limit
+        for (j in commands.indices) {
+            when (commands[j]) {
+                '>' -> i++
+                '<' -> i--
+                '+' -> arrayOfCells[i]++
+                '-' -> arrayOfCells[i]--
+                '[' -> if (arrayOfCells[i] == 0) {
+                    var k = 0
+                    var mutableJ = j
+                    while (k >= 0) {
+                        mutableJ++
+                        when (commands[mutableJ]) {
+                            '[' -> k++
+                            ']' -> k--
+                        }
+                    }
+                    when (commands[mutableJ]) {
+                        '>' -> i++
+                        '<' -> i--
+                        '+' -> arrayOfCells[i]++
+                        '-' -> arrayOfCells[i]--
+                    }
+                }
+                ']' -> if (arrayOfCells[i] == 0) {
+                    var k = 0
+                    var mutableJ = j
+                    while (k >= 0) {
+                        mutableJ--
+                        when (commands[mutableJ]) {
+                            '[' -> k--
+                            ']' -> k++
+                        }
+                    }
+                    when (commands[mutableJ]) {
+                        '>' -> i++
+                        '<' -> i--
+                        '+' -> arrayOfCells[i]++
+                        '-' -> arrayOfCells[i]--
+                    }
+                }
+            }
+            if (i > commands.length) throw IllegalStateException()
+            mutableLimit--
+            if (mutableLimit == 0) break
+        }
+        return arrayOfCells.toList()
+    } else throw IllegalArgumentException()*/
+}
+
+/** Тест */
+fun resultsOfMatch(text: String): Map<String, Int> {
+    val res = mutableMapOf<String, Int>()
+    val parts1 = text.split("; ")
+    try {
+        for (elements in parts1) {
+            val count = elements.split(" ")[1].split(":")
+            val players = elements.split(" ")[0].split("-")
+            when {
+                count[0].toInt() > count[1].toInt() -> {
+                    res[players[0]] = res.getOrDefault(players[0], 0) + 3
+                    res[players[1]] = res.getOrDefault(players[1], 0) + 0
+                }
+                count[1].toInt() > count[0].toInt() -> {
+                    res[players[1]] = res.getOrDefault(players[1], 0) + 3
+                    res[players[0]] = res.getOrDefault(players[0], 0) + 0
+                }
+                else -> {
+                    res[players[0]] = res.getOrDefault(players[0], 0) + 1
+                    res[players[1]] = res.getOrDefault(players[1], 0) + 1
+                }
+            }
+        }
+    } catch (e: NumberFormatException) {
+        throw IllegalArgumentException()
+    } catch (e: IndexOutOfBoundsException) {
+        throw IllegalArgumentException()
+    }
+    return res
+}
