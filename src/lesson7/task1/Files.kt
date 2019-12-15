@@ -53,24 +53,21 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO() /*{
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
     val res = mutableMapOf<String, Int>()
+    for (elements in substrings) res[elements] = 0
     for (line in File(inputName).readLines()) {
-        for (word in line.split(" ")) {
+        for (word in Regex("""\s""").split(line)) {
             for (element in substrings) {
-                val wordLength = word.length
-                val elementLength = element.length
-                if (wordLength >= elementLength) {
-                    for (i in 0..wordLength - elementLength + 1)
-                        if (word.substring(i, elementLength) == element)
-                            res[element] = res.getOrDefault(element, 0) + 1
-                }
+                val comparedElement = element.toLowerCase()
+                val quantifyOfSubstrings = word.windowed(element.length, 1)
+                for (i in quantifyOfSubstrings.indices)
+                    if (quantifyOfSubstrings[i].toLowerCase() == comparedElement) res[element] = res[element]!! + 1
             }
         }
     }
     return res
-}*/
-
+}
 
 /**
  * Средняя
@@ -125,7 +122,48 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    var maxLength = 0
+    var indexOfCenter = 0
+    for (line in File(inputName).readLines()) {
+        var k = 0
+        for (i in line.indices) {
+            if (line[i] == ' ') k++
+            else break
+        }
+        val lineLength = line.length - k
+        if (maxLength < lineLength) {
+            maxLength = lineLength
+            indexOfCenter = lineLength / 2
+        }
+    }
+    File(outputName).bufferedWriter().use {
+        for (line in File(inputName).readLines()) {
+            var k = 0
+            for (i in line.indices) {
+                if (line[i] == ' ') k++
+                else break
+            }
+            val lineLength = line.length
+            var currentIndexOfCenter = (lineLength + k) / 2
+            if (currentIndexOfCenter <= indexOfCenter) {
+                while (currentIndexOfCenter < indexOfCenter) {
+                    it.write(" ")
+                    currentIndexOfCenter++
+                }
+                it.write(line)
+                it.newLine()
+            } else {
+                for (i in line.indices)
+                    if (line[i] != ' ') {
+                        k = i
+                        break
+                    }
+                for (i in k until lineLength)
+                    it.write(line[i].toString())
+                it.newLine()
+            }
+        }
+    }
 }
 
 /**

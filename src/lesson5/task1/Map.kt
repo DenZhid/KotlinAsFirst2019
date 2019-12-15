@@ -3,7 +3,7 @@
 package lesson5.task1
 
 import ru.spbstu.wheels.sorted
-//import kotlin.math.max
+import kotlin.math.max
 
 /**
  * Пример
@@ -382,28 +382,38 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO() /*{
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> /*{
+    val arrayOfDecision = arrayOf<Array<Pair<Int, MutableList<String>>>>()
+    for (j in 0 until capacity)
+        arrayOfDecision[0][j] = Pair(0, mutableListOf())
+    for (i in 1 until treasures.size)
+        for (j in 0 until capacity)
+            if
+}*/ {
     val listOfNames = mutableListOf<String>()
     val listOfCounts = mutableListOf<Int>()
     val listOfWeights = mutableListOf<Int>()
-    var res = setOf<String>()
     for ((name, characteristic) in treasures) {
         listOfNames.add(name)
         listOfCounts.add(characteristic.second)
         listOfWeights.add(characteristic.first)
     }
-    val array = Array(listOfNames.size + 1) { Array(capacity) { 0 } }
-    for (i in 1 until listOfNames.size + 1) {
-        for (j in 0 until capacity) {
-            if (listOfWeights[i - 1] > j) array[i][j] = array[i - 1][j]
+    val arrayOfDecisions =
+        Array(listOfNames.size + 1) { Array(capacity + 1) { Pair<Int, MutableList<String>>(0, mutableListOf()) } }
+    for (i in 1..listOfNames.size)
+        for (j in 0..capacity)
+            if (listOfWeights[i - 1] > j) arrayOfDecisions[i][j] = arrayOfDecisions[i - 1][j]
             else {
-                val maxBetween = max(array[i - 1][j], array[i - 1][j - listOfWeights[i - 1]] + listOfCounts[i - 1])
-                array[i][j] = maxBetween
-                if (maxBetween == array[i - 1][j - listOfWeights[i - 1]] + listOfCounts[i - 1]) res =
-                    res + listOfNames[i - 1]
+                val maxCountBetween = max(
+                    arrayOfDecisions[i - 1][j].first,
+                    arrayOfDecisions[i - 1][j - listOfWeights[i - 1]].first + listOfCounts[i - 1]
+                )
+                val nameOfMaxBetween = if (maxCountBetween == arrayOfDecisions[i - 1][j].first)
+                    arrayOfDecisions[i - 1][j].second.toMutableList()
+                else
+                    (arrayOfDecisions[i - 1][j - listOfWeights[i - 1]].second + (listOfNames[i - 1])).toMutableList()
+                arrayOfDecisions[i][j] = Pair(maxCountBetween, nameOfMaxBetween)
             }
-        }
-    }
-    return res
-}*/
+    return arrayOfDecisions[listOfNames.size][capacity].second.toSet()
+}
 

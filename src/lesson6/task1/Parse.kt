@@ -349,10 +349,60 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
-    TODO()
-/* if (Regex("""^[+\-<> ]*(\[[+\-<> \[\]]*\])*$""").matches(commands)) {
-        val arrayOfCells = Array(cells) { 0 }
+/*fun cycle(arrayOfCells: Array<Int>, commands: String, i: Int, j: Int, command: Char): Pair<Int, Array<Int>> =
+    when (command) {
+        '[' -> {
+            var mutableI = i
+            if (arrayOfCells[mutableI] == 0) {
+                var k = 0
+                var mutableJ = j
+                while (k >= 0) {
+                    mutableJ++
+                    when (commands[mutableJ]) {
+                        '[' -> k++
+                        ']' -> k--
+                    }
+                }
+                when (commands[mutableJ]) {
+                    '>' -> mutableI++
+                    '<' -> mutableI--
+                    '+' -> arrayOfCells[i]++
+                    '-' -> arrayOfCells[i]--
+                    '[' -> cycle(arrayOfCells, commands, mutableI, j, commands[mutableJ])
+                    ']' -> cycle(arrayOfCells, commands, mutableI, j, commands[mutableJ])
+                }
+            }
+            Pair(mutableI, arrayOfCells)
+        }
+        else -> {
+            var mutableI = i
+            if (arrayOfCells[mutableI] != 0) {
+                var k = 0
+                var mutableJ = j
+                while (k >= 0) {
+                    mutableJ--
+                    when (commands[mutableJ]) {
+                        '[' -> k--
+                        ']' -> k++
+                    }
+                }
+                mutableJ += 2
+                when (commands[mutableJ]) {
+                    '>' -> mutableI++
+                    '<' -> mutableI--
+                    '+' -> arrayOfCells[i]++
+                    '-' -> arrayOfCells[i]--
+                    '[' -> cycle(arrayOfCells, commands, mutableI, j, commands[mutableJ])
+                    ']' -> cycle(arrayOfCells, commands, mutableI, j, commands[mutableJ])
+                }
+            }
+            Pair(mutableI, arrayOfCells)
+        }
+    }*/
+
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO() /*{
+    if (Regex("""^[+\-<> ]*(\[[+\-<> \[\]]*\])*$""").matches(commands)) {
+        var arrayOfCells = Array(cells) { 0 }
         var i = cells / 2
         var mutableLimit = limit
         for (j in commands.indices) {
@@ -361,39 +411,15 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
                 '<' -> i--
                 '+' -> arrayOfCells[i]++
                 '-' -> arrayOfCells[i]--
-                '[' -> if (arrayOfCells[i] == 0) {
-                    var k = 0
-                    var mutableJ = j
-                    while (k >= 0) {
-                        mutableJ++
-                        when (commands[mutableJ]) {
-                            '[' -> k++
-                            ']' -> k--
-                        }
-                    }
-                    when (commands[mutableJ]) {
-                        '>' -> i++
-                        '<' -> i--
-                        '+' -> arrayOfCells[i]++
-                        '-' -> arrayOfCells[i]--
-                    }
+                '[' -> {
+                    val resOfCycle = cycle(arrayOfCells, commands, i, j, commands[j])
+                    i = resOfCycle.first
+                    arrayOfCells = resOfCycle.second
                 }
-                ']' -> if (arrayOfCells[i] == 0) {
-                    var k = 0
-                    var mutableJ = j
-                    while (k >= 0) {
-                        mutableJ--
-                        when (commands[mutableJ]) {
-                            '[' -> k--
-                            ']' -> k++
-                        }
-                    }
-                    when (commands[mutableJ]) {
-                        '>' -> i++
-                        '<' -> i--
-                        '+' -> arrayOfCells[i]++
-                        '-' -> arrayOfCells[i]--
-                    }
+                ']' -> {
+                    val resOfCycle = cycle(arrayOfCells, commands, i, j, commands[j])
+                    i = resOfCycle.first
+                    arrayOfCells = resOfCycle.second
                 }
             }
             if (i > commands.length) throw IllegalStateException()
@@ -401,8 +427,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             if (mutableLimit == 0) break
         }
         return arrayOfCells.toList()
-    } else throw IllegalArgumentException()*/
-}
+    } else throw IllegalArgumentException()
+}*/
 
 /** Тест */
 fun resultsOfMatch(text: String): Map<String, Int> {
