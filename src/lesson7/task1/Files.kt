@@ -2,7 +2,9 @@
 
 package lesson7.task1
 
+import lesson3.task1.digitNumber
 import java.io.File
+import kotlin.math.pow
 
 /**
  * Пример
@@ -54,10 +56,11 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  *
  */
 fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
-    val res = mutableMapOf<String, Int>()
+    TODO()
+    /*val res = mutableMapOf<String, Int>()
     for (elements in substrings) res[elements] = 0
     for (line in File(inputName).readLines()) {
-        for (word in Regex("""\s""").split(line)) {
+        for (word in Regex("""\s+""").split(line)) {
             for (element in substrings) {
                 val comparedElement = element.toLowerCase()
                 val quantifyOfSubstrings = word.windowed(element.length, 1)
@@ -66,7 +69,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
             }
         }
     }
-    return res
+    return res*/
 }
 
 /**
@@ -124,12 +127,14 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     var maxLength = 0
     var indexOfCenter = 0
+    var k = 0
     for (line in File(inputName).readLines()) {
-        var k = 0
-        for (i in line.indices) {
+        for (i in line.indices)
             if (line[i] == ' ') k++
             else break
-        }
+        for (i in line.length - 1 downTo 0)
+            if (line[i] == ' ') k++
+            else break
         val lineLength = line.length - k
         if (maxLength < lineLength) {
             maxLength = lineLength
@@ -138,11 +143,13 @@ fun centerFile(inputName: String, outputName: String) {
     }
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
-            var k = 0
-            for (i in line.indices) {
+            k = 0
+            for (i in line.indices)
                 if (line[i] == ' ') k++
                 else break
-            }
+            for (i in line.length - 1 downTo 0)
+                if (line[i] == ' ') k++
+                else break
             val lineLength = line.length
             var currentIndexOfCenter = (lineLength + k) / 2
             if (currentIndexOfCenter <= indexOfCenter) {
@@ -158,7 +165,13 @@ fun centerFile(inputName: String, outputName: String) {
                         k = i
                         break
                     }
-                for (i in k until lineLength)
+                var n = 0
+                for (i in line.length - 1 downTo 0)
+                    if (line[i] != ' ') {
+                        n = line.length - (i + 1)
+                        break
+                    }
+                for (i in k until lineLength - n)
                     it.write(line[i].toString())
                 it.newLine()
             }
@@ -194,7 +207,42 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    var maxLength = 0
+    val listOfNormalizedLines = mutableListOf<String>()
+    for (line in File(inputName).readLines()) {
+        val normalizedString = Regex("""\s+""").replace(line, " ").trim()
+        listOfNormalizedLines.add(normalizedString)
+        if (normalizedString.length > maxLength) maxLength = normalizedString.length
+    }
+    File(outputName).bufferedWriter().use {
+        for (line in listOfNormalizedLines) {
+            val numberOfSpace = Regex(""" """).findAll(line).toList().size
+            if (numberOfSpace != 0) {
+                val numberOfDesiredSpace = (maxLength - line.length) / numberOfSpace
+                val possibleBalance = (maxLength - line.length) % numberOfSpace
+                val listOfWords = line.split(" ")
+                if (possibleBalance != 0) {
+                    val arrayOfSpace = Array(numberOfSpace) { numberOfDesiredSpace }
+                    for (i in 0 until possibleBalance)
+                        arrayOfSpace[i]++
+                    for ((k, words) in (0 until listOfWords.size - 1).withIndex()) {
+                        it.write(listOfWords[words])
+                        for (i in 1..arrayOfSpace[k] + 1)
+                            it.write(" ")
+                    }
+                    it.write(listOfWords[listOfWords.size - 1])
+                } else {
+                    for (words in 0 until listOfWords.size - 1) {
+                        it.write(listOfWords[words])
+                        for (i in 1..numberOfDesiredSpace + 1)
+                            it.write(" ")
+                    }
+                    it.write(listOfWords[listOfWords.size - 1])
+                }
+            } else it.write(line)
+            it.newLine()
+        }
+    }
 }
 
 /**
@@ -494,11 +542,49 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 -132
 ----
 3
-
  * Используемые пробелы, отступы и дефисы должны в точности соответствовать примеру.
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+   TODO() /*val res = lhv / rhv
+    val balance = lhv % rhv
+    val allBalances = mutableListOf<String>()
+    val allResults = mutableListOf<Int>()
+    var mutableRes = lhv.toString()
+    val mutableBalance = StringBuilder()
+    allResults.add(rhv * (res / 10.0.pow(digitNumber(res) - 1).toInt()))
+    mutableRes = mutableRes.substring(0, digitNumber(allResults[0]))
+    mutableBalance.append(mutableRes.toInt() - allResults[0])
+        .append(lhv % 10.0.pow(digitNumber(allResults[0]) - 1).toInt() / 10)
+    allBalances.add(mutableBalance.toString())
+    mutableRes = allBalances[0]
+    mutableBalance.clear()
+    for (i in 1 until digitNumber(res)) {
+        allResults.add(rhv * ((res / 10.0.pow(digitNumber(res) - (i + 1)).toInt()) % 10))
+        mutableBalance.append(mutableRes.toInt() - allResults[i]).append(lhv % digitNumber(allResults[i]) / 10)
+        allBalances.add(mutableBalance.toString())
+        mutableRes = allBalances[i]
+        mutableBalance.clear()
+    }
+    File(outputName).bufferedWriter().use {
+        it.write(" $lhv | $rhv")
+        it.newLine()
+        it.write("-${allResults[1]}")
+        for (i in 0 until digitNumber(lhv) - digitNumber(allResults[1]) + 3)
+            it.write(" ")
+        it.write("$res")
+        it.newLine()
+        for (i in 1 until allResults.size) {
+            it.write("-")
+            it.newLine()
+            it.write(" ${allResults[i]}")
+            it.newLine()
+            it.write(" -${allBalances[i]}")
+            it.newLine()
+        }
+        it.write("-")
+        it.newLine()
+        it.write(" $balance")
+    }*/
 }
 

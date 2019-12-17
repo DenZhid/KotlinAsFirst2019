@@ -72,6 +72,44 @@ Basic, Ruby, Swift.
             mapOf("--" to 4, "ее" to 2, "животное" to 2, "." to 2),
             countSubstrings("input/substrings_in2.txt", listOf("--", "ее", "животное", "."))
         )
+        assertEquals(
+            mapOf(
+                "ёб" to 2,
+                "ббгююввщЬД" to 2,
+                "НЧЫа" to 1,
+                "Жв" to 0,
+                "Бвщябаавз" to 1,
+                "авбвЛСббвв" to 2,
+                "Вв" to 8,
+                "авввб" to 1,
+                "ав" to 7,
+                "бвбЮыа" to 0,
+                "бМбавбб" to 1,
+                "абЙЩх" to 1,
+                "авЪх" to 1,
+                "бббакЪ" to 0
+            ),
+            countSubstrings(
+                "input/substrings_in3.txt",
+                listOf(
+                    "ёб",
+                    "ббгююввщЬД",
+                    "НЧЫа",
+                    "Жв",
+                    "Бвщябаавз",
+                    "авбвЛСббвв",
+                    "ёб",
+                    "Вв",
+                    "авввб",
+                    "ав",
+                    "бвбЮыа",
+                    "бМбавбб",
+                    "абЙЩх",
+                    "авЪх",
+                    "бббакЪ"
+                )
+            )
+        )
     }
 
     @Test
@@ -114,7 +152,12 @@ Basic, Ruby, Swift.
         Вывести его в выходной файл с именем outputName, выровняв по центру."""
         )
         File("temp.txt").delete()
-
+        centerFile("input/center_in2.txt", "temp.txt")
+        assertFileContent(
+            "temp.txt",
+            """ЁААОББ\nЁААОББ"""
+        )
+        File("temp.txt").delete()
     }
 
     @Test
@@ -143,7 +186,6 @@ Basic, Ruby, Swift.
 между                более               правой               парой               соседних               слов."""
         )
         File("temp.txt").delete()
-
     }
 
     @Test

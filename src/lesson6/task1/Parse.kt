@@ -254,8 +254,10 @@ fun firstDuplicateIndex(str: String): Int {
     var res = -1
     var currentIndex = 0
     for (i in 0 until parts.size - 1) {
-        if (parts[i] == parts[i + 1]) res = currentIndex
-        else currentIndex += parts[i].length + 1
+        if (parts[i] == parts[i + 1]) {
+            res = currentIndex
+            break
+        } else currentIndex += parts[i].length + 1
     }
     return res
 }
@@ -272,7 +274,7 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    val parts = description.split("; ")
+    TODO()/*val parts = description.split("; ")
     val mapOfProduct = mutableMapOf<String, Double>()
     try {
         for (elements in parts) {
@@ -291,7 +293,7 @@ fun mostExpensive(description: String): String {
         maxPrice = price
         nameOfMaxPricedProduct = name
     }
-    return nameOfMaxPricedProduct
+    return nameOfMaxPricedProduct*/
 }
 
 /**
