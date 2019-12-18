@@ -8,7 +8,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
-import kotlin.math.abs
+import kotlin.math.atan
 
 /**
  * Точка на плоскости
@@ -164,9 +164,11 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Найти точку пересечения с другой линией.
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
-    fun crossPoint(other: Line): Point {
-        TODO()
-    }
+    fun crossPoint(other: Line): Point = Point(
+        (other.b * cos(angle) - b * cos(other.angle)) / (sin(angle - other.angle)),
+        (other.b * sin(angle) - b * sin(other.angle)) / (sin(angle - other.angle))
+    )
+
 
     override fun equals(other: Any?) = other is Line && angle == other.angle && b == other.b
 
@@ -193,15 +195,20 @@ fun lineBySegment(s: Segment): Line {
  *
  * Построить прямую по двум точкам
  */
-fun lineByPoints(a: Point, b: Point): Line = TODO()
+fun lineByPoints(a: Point, b: Point): Line {
+    TODO()
+}
 
 /**
  * Сложная
  *
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
-fun bisectorByPoints(a: Point, b: Point): Line = TODO()
-
+fun bisectorByPoints(a: Point, b: Point): Line = Line(
+    Point(((a.x + b.x) / 2), ((a.y + b.y) / 2)),
+    if (a.x != b.x) (atan((b.y - a.y) / (b.x - a.x)) + (PI / 2)) % PI
+    else 0.0
+)
 /**
  * Средняя
  *
@@ -219,7 +226,10 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
  * (построить окружность по трём точкам, или
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
-fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = TODO()
+fun circleByThreePoints(a: Point, b: Point, c: Point): Circle = Circle(
+    bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c)),
+    bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c)).distance(c)
+)
 
 /**
  * Очень сложная

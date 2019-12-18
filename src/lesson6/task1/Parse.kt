@@ -402,8 +402,9 @@ fun fromRoman(roman: String): Int = TODO()
         }
     }*/
 
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO() /*{
-    if (Regex("""^[+\-<> ]*(\[[+\-<> \[\]]*\])*$""").matches(commands)) {
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    TODO()
+    /*if (Regex("""^[+\-<> ]*(\[[+\-<> \[\]]*\])*$""").matches(commands)) {
         var arrayOfCells = Array(cells) { 0 }
         var i = cells / 2
         var mutableLimit = limit
@@ -429,8 +430,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TO
             if (mutableLimit == 0) break
         }
         return arrayOfCells.toList()
-    } else throw IllegalArgumentException()
-}*/
+    } else throw IllegalArgumentException()*/
+}
 
 /** Тест */
 fun resultsOfMatch(text: String): Map<String, Int> {
